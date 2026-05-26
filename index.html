@@ -5,153 +5,133 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PackdUp — AI Backpacker Travel Planner</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
-  *{box-sizing:border-box;margin:0;padding:0}
-  :root{--green:#1D9E75;--green-dark:#0F6E56;--green-light:rgba(29,158,117,0.12);--bg:#080c10;--bg2:#0d1117;--bg3:#161b22;--border:#1f2937;--text:#e5e7eb;--muted:#6b7280;--dim:#374151}
-  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-  a{color:inherit;text-decoration:none}
-
-  /* NAV */
-  nav{background:var(--bg);border-bottom:0.5px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
-  .logo{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;letter-spacing:-0.5px}
-  .logo span{color:var(--green)}
-  .logo small{font-family:'DM Sans',sans-serif;font-size:9px;font-weight:300;color:var(--dim);letter-spacing:2px;text-transform:uppercase;display:block;margin-top:-3px}
-  .nav-links{display:flex;gap:4px}
-  .nav-btn{background:transparent;border:0.5px solid transparent;padding:7px 14px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;transition:all 0.2s}
-  .nav-btn:hover{color:var(--text);background:var(--bg3)}
-  .nav-btn.active{color:var(--green);border-color:rgba(29,158,117,0.4);background:var(--green-light)}
-
-  /* SCREENS */
-  .screen{display:none}.screen.active{display:block}
-
-  /* HERO */
-  .hero{padding:60px 24px 40px;text-align:center;border-bottom:0.5px solid var(--border);max-width:700px;margin:0 auto}
-  .eyebrow{font-size:11px;font-weight:500;color:var(--green);text-transform:uppercase;letter-spacing:2.5px;margin-bottom:14px}
-  .hero h1{font-family:'Playfair Display',serif;font-size:42px;font-weight:700;line-height:1.15;margin-bottom:14px}
-  .hero h1 em{font-style:italic;color:var(--green)}
-  .hero p{font-size:16px;color:var(--muted);line-height:1.7;max-width:480px;margin:0 auto 28px}
-  .hero-stats{display:flex;justify-content:center;gap:40px;margin-bottom:32px}
-  .stat-num{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--green)}
-  .stat-label{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-top:2px}
-  .hero-cta{background:var(--green);color:#fff;border:none;padding:14px 32px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:background 0.2s}
-  .hero-cta:hover{background:var(--green-dark)}
-
-  /* PLANNER */
-  .planner-wrap{max-width:680px;margin:0 auto;padding:32px 24px}
-  .section-label{font-size:11px;font-weight:500;color:var(--dim);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px}
-  .form-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
-  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .form-group{display:flex;flex-direction:column;gap:5px}
-  .form-label{font-size:10px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px}
-  .form-group input,.form-group select,.form-group textarea{background:var(--bg);border:0.5px solid var(--border);border-radius:8px;padding:10px 13px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;transition:border-color 0.2s;width:100%}
-  .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--green)}
-  .form-group select option{background:var(--bg2)}
-  .form-group textarea{resize:none;height:72px}
-  .style-tags{display:flex;flex-wrap:wrap;gap:7px}
-  .style-tag{padding:6px 12px;border-radius:20px;font-size:12px;font-weight:500;background:var(--bg);border:0.5px solid var(--border);cursor:pointer;color:var(--muted);transition:all 0.2s}
-  .style-tag.on{background:var(--green-light);border-color:var(--green);color:#5DCAA5}
-  .gen-btn{background:var(--green);color:#fff;border:none;padding:13px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background 0.2s;width:100%}
-  .gen-btn:hover{background:var(--green-dark)}
-  .gen-btn:disabled{background:var(--bg3);color:var(--dim);cursor:not-allowed}
-  .result-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:14px;padding:20px;margin-top:16px;display:none}
-  .result-card.show{display:block}
-  .result-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-bottom:4px}
-  .result-tagline{font-size:13px;color:var(--muted);font-style:italic;margin-bottom:14px}
-  .result-badges{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}
-  .badge{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:500;background:var(--green-light);border:0.5px solid rgba(29,158,117,0.4);color:#5DCAA5}
-  .day-block{border-left:2px solid var(--green);padding:10px 14px;margin-bottom:10px;background:rgba(29,158,117,0.05);border-radius:0 8px 8px 0}
-  .day-title{font-size:13px;font-weight:500;color:#5DCAA5;margin-bottom:4px}
-  .day-desc{font-size:13px;color:var(--muted);line-height:1.65}
-  .tip-box{margin-top:14px;padding:13px 15px;background:rgba(29,158,117,0.08);border-radius:8px;border-left:3px solid var(--green);border-top-left-radius:0;border-bottom-left-radius:0}
-  .tip-label{font-size:10px;font-weight:500;color:var(--green);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
-  .tip-text{font-size:13px;color:#9FE1CB;line-height:1.6}
-  .visa-box{margin-top:10px;padding:12px 14px;background:var(--bg);border-radius:8px;border:0.5px solid var(--border)}
-  .visa-label{font-size:10px;font-weight:500;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
-  .visa-text{font-size:13px;color:var(--muted);line-height:1.6}
-  .dots{display:inline-flex;gap:4px;align-items:center}
-  .dots span{width:6px;height:6px;border-radius:50%;background:var(--green);animation:bop 1.2s infinite}
-  .dots span:nth-child(2){animation-delay:.2s}
-  .dots span:nth-child(3){animation-delay:.4s}
-  @keyframes bop{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
-
-  /* EXPLORE */
-  .explore-wrap{max-width:900px;margin:0 auto;padding:32px 24px}
-  .region-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
-  .rtab{padding:7px 15px;border-radius:20px;font-size:12px;font-weight:500;background:var(--bg2);border:0.5px solid var(--border);cursor:pointer;color:var(--muted);transition:all 0.2s}
-  .rtab:hover{color:var(--text);border-color:var(--dim)}
-  .rtab.active{color:#fff;background:var(--bg3);border-color:rgba(255,255,255,0.2)}
-  .rtab.barry{border-color:rgba(29,158,117,0.4);color:#5DCAA5}
-  .rtab.barry.active{background:rgba(29,158,117,0.15);border-color:var(--green);color:#fff}
-  .verified-note{display:none;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:500;background:var(--green-light);border:0.5px solid rgba(29,158,117,0.4);color:#5DCAA5;margin-bottom:14px;width:fit-content}
-  .verified-note.show{display:flex}
-  .country-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:16px}
-  .country-card{border-radius:12px;padding:14px 10px;cursor:pointer;transition:all 0.2s;text-align:center;border:0.5px solid transparent;position:relative}
-  .country-card:hover{transform:translateY(-2px)}
-  .country-card.active{border-width:2px}
-  .verified-dot{position:absolute;top:6px;right:6px;width:16px;height:16px;border-radius:50%;background:var(--green);font-size:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
-  .cc-flag{font-size:24px;margin-bottom:6px}
-  .cc-name{font-size:12px;font-weight:500}
-  .cc-sub{font-size:10px;margin-top:2px;opacity:0.65}
-  .country-panel{border-radius:14px;border:0.5px solid var(--border);overflow:hidden;display:none;margin-bottom:24px}
-  .country-panel.show{display:block}
-  .cp-header{padding:18px 20px 14px;display:flex;align-items:center;gap:14px}
-  .cp-flag{font-size:32px}
-  .cp-name{font-size:18px;font-weight:500}
-  .cp-tagline{font-size:12px;opacity:0.65;margin-top:3px}
-  .cp-budget{font-size:12px;font-weight:500;padding:4px 12px;border-radius:20px;margin-left:auto}
-  .vibe-row{display:flex;gap:7px;flex-wrap:wrap;padding:0 20px 14px}
-  .vibe-pill{padding:4px 11px;border-radius:20px;font-size:11px;font-weight:500}
-  .cp-sections{display:grid;grid-template-columns:1fr 1fr;border-top:0.5px solid rgba(255,255,255,0.07)}
-  .cp-section{padding:14px 16px;border-right:0.5px solid rgba(255,255,255,0.07)}
-  .cp-section:last-child{border-right:none}
-  .cp-section.full{grid-column:1/-1;border-right:none}
-  .cp-section-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;opacity:0.45}
-  .cp-section-text{font-size:12px;line-height:1.65;opacity:0.82}
-  .cp-places{display:flex;flex-wrap:wrap;gap:7px;padding:14px 20px;border-top:0.5px solid rgba(255,255,255,0.07)}
-  .place-chip{padding:6px 13px;border-radius:20px;font-size:12px;cursor:pointer;transition:all 0.2s;border:0.5px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.8)}
-  .place-chip:hover{background:rgba(255,255,255,0.14)}
-  .cp-plan-btn{width:100%;padding:12px;border:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;color:#fff;transition:opacity 0.2s}
-  .cp-plan-btn:hover{opacity:0.85}
-  .cp-source{font-size:10px;color:var(--dim);padding:8px 20px;border-top:0.5px solid var(--border);font-style:italic}
-
-  /* SPORT */
-  .sport-wrap{max-width:900px;margin:0 auto;padding:32px 24px}
-  .sport-hero{text-align:center;margin-bottom:32px}
-  .sport-hero h2{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;margin-bottom:8px}
-  .sport-hero p{font-size:14px;color:var(--muted);max-width:480px;margin:0 auto}
-
-  /* ABOUT */
-  .about-wrap{max-width:680px;margin:0 auto;padding:48px 24px}
-  .about-wrap h2{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;margin-bottom:20px}
-  .about-wrap p{font-size:15px;color:var(--muted);line-height:1.8;margin-bottom:16px}
-  .about-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:28px 0}
-  .about-stat{background:var(--bg2);border:0.5px solid var(--border);border-radius:12px;padding:16px;text-align:center}
-  .about-stat-num{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--green)}
-  .about-stat-label{font-size:11px;color:var(--muted);margin-top:4px}
-  .feedback-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:14px;padding:24px;margin-top:32px}
-  .feedback-card h3{font-size:16px;font-weight:500;margin-bottom:8px}
-  .feedback-card p{font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6}
-  .feedback-form{display:flex;flex-direction:column;gap:10px}
-  .feedback-form input,.feedback-form textarea,.feedback-form select{background:var(--bg);border:0.5px solid var(--border);border-radius:8px;padding:10px 13px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;width:100%}
-  .feedback-form textarea{resize:none;height:90px}
-  .feedback-form input:focus,.feedback-form textarea:focus,.feedback-form select:focus{border-color:var(--green)}
-  .feedback-btn{background:var(--green);color:#fff;border:none;padding:11px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;width:100%;transition:background 0.2s}
-  .feedback-btn:hover{background:var(--green-dark)}
-
-  /* FOOTER */
-  footer{border-top:0.5px solid var(--border);padding:24px;text-align:center;margin-top:48px}
-  footer p{font-size:12px;color:var(--dim)}
-
-  /* MOBILE */
-  @media(max-width:600px){
-    .hero h1{font-size:28px}
-    .form-row{grid-template-columns:1fr}
-    .cp-sections{grid-template-columns:1fr}
-    .cp-section{border-right:none;border-bottom:0.5px solid rgba(255,255,255,0.07)}
-    .about-stats{grid-template-columns:1fr}
-    nav{padding:10px 16px}
-    .nav-btn{padding:6px 10px;font-size:12px}
-  }
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--green:#1D9E75;--green-dark:#0F6E56;--green-light:rgba(29,158,117,0.12);--bg:#080c10;--bg2:#0d1117;--bg3:#161b22;--border:#1f2937;--text:#e5e7eb;--muted:#6b7280;--dim:#374151}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+nav{background:var(--bg);border-bottom:0.5px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.logo{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;letter-spacing:-0.5px}
+.logo span{color:var(--green)}
+.logo small{font-family:'DM Sans',sans-serif;font-size:9px;font-weight:300;color:var(--dim);letter-spacing:2px;text-transform:uppercase;display:block;margin-top:-3px}
+.nav-links{display:flex;gap:4px}
+.nav-btn{background:transparent;border:0.5px solid transparent;padding:7px 14px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;transition:all 0.2s}
+.nav-btn:hover{color:var(--text);background:var(--bg3)}
+.nav-btn.active{color:var(--green);border-color:rgba(29,158,117,0.4);background:var(--green-light)}
+.screen{display:none}.screen.active{display:block}
+.hero{padding:60px 24px 40px;text-align:center;border-bottom:0.5px solid var(--border);max-width:700px;margin:0 auto}
+.eyebrow{font-size:11px;font-weight:500;color:var(--green);text-transform:uppercase;letter-spacing:2.5px;margin-bottom:14px}
+.hero h1{font-family:'Playfair Display',serif;font-size:42px;font-weight:700;line-height:1.15;margin-bottom:14px}
+.hero h1 em{font-style:italic;color:var(--green)}
+.hero p{font-size:16px;color:var(--muted);line-height:1.7;max-width:480px;margin:0 auto 28px}
+.hero-stats{display:flex;justify-content:center;gap:40px;margin-bottom:32px}
+.stat-num{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--green)}
+.stat-label{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+.hero-cta{background:var(--green);color:#fff;border:none;padding:14px 32px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:background 0.2s}
+.hero-cta:hover{background:var(--green-dark)}
+.planner-wrap{max-width:680px;margin:0 auto;padding:32px 24px}
+.section-label{font-size:11px;font-weight:500;color:var(--dim);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px}
+.form-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-label{font-size:10px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px}
+.form-group input,.form-group textarea{background:var(--bg);border:0.5px solid var(--border);border-radius:8px;padding:10px 13px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;transition:border-color 0.2s;width:100%}
+.form-group input:focus,.form-group textarea:focus{border-color:var(--green)}
+.form-group textarea{resize:none;height:72px}
+.style-tags{display:flex;flex-wrap:wrap;gap:7px}
+.style-tag{padding:6px 12px;border-radius:20px;font-size:12px;font-weight:500;background:var(--bg);border:0.5px solid var(--border);cursor:pointer;color:var(--muted);transition:all 0.2s}
+.style-tag.on{background:var(--green-light);border-color:var(--green);color:#5DCAA5}
+.gen-btn{background:var(--green);color:#fff;border:none;padding:13px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background 0.2s;width:100%}
+.gen-btn:hover{background:var(--green-dark)}
+.gen-btn:disabled{background:var(--bg3);color:var(--dim);cursor:not-allowed}
+.result-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:14px;padding:20px;margin-top:16px;display:none}
+.result-card.show{display:block}
+.result-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-bottom:4px}
+.result-tagline{font-size:13px;color:var(--muted);font-style:italic;margin-bottom:14px}
+.result-badges{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}
+.badge{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:500;background:var(--green-light);border:0.5px solid rgba(29,158,117,0.4);color:#5DCAA5}
+.day-block{border-left:2px solid var(--green);padding:10px 14px;margin-bottom:10px;background:rgba(29,158,117,0.05);border-radius:0 8px 8px 0}
+.day-title{font-size:13px;font-weight:500;color:#5DCAA5;margin-bottom:4px}
+.day-desc{font-size:13px;color:var(--muted);line-height:1.65}
+.tip-box{margin-top:14px;padding:13px 15px;background:rgba(29,158,117,0.08);border-radius:8px;border-left:3px solid var(--green);border-top-left-radius:0;border-bottom-left-radius:0}
+.tip-label{font-size:10px;font-weight:500;color:var(--green);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.tip-text{font-size:13px;color:#9FE1CB;line-height:1.6}
+.visa-box{margin-top:10px;padding:12px 14px;background:var(--bg);border-radius:8px;border:0.5px solid var(--border)}
+.visa-label{font-size:10px;font-weight:500;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.visa-text{font-size:13px;color:var(--muted);line-height:1.6}
+.error-box{margin-top:10px;padding:12px 14px;background:rgba(220,38,38,0.1);border-radius:8px;border:0.5px solid rgba(220,38,38,0.3);color:#fca5a5;font-size:13px;display:none}
+.dots{display:inline-flex;gap:4px;align-items:center}
+.dots span{width:6px;height:6px;border-radius:50%;background:var(--green);animation:bop 1.2s infinite}
+.dots span:nth-child(2){animation-delay:.2s}
+.dots span:nth-child(3){animation-delay:.4s}
+@keyframes bop{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+.explore-wrap{max-width:900px;margin:0 auto;padding:32px 24px}
+.region-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+.rtab{padding:7px 15px;border-radius:20px;font-size:12px;font-weight:500;background:var(--bg2);border:0.5px solid var(--border);cursor:pointer;color:var(--muted);transition:all 0.2s}
+.rtab:hover{color:var(--text)}
+.rtab.active{color:#fff;background:var(--bg3);border-color:rgba(255,255,255,0.2)}
+.rtab.barry{border-color:rgba(29,158,117,0.4);color:#5DCAA5}
+.rtab.barry.active{background:rgba(29,158,117,0.15);border-color:var(--green);color:#fff}
+.verified-note{display:none;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:500;background:var(--green-light);border:0.5px solid rgba(29,158,117,0.4);color:#5DCAA5;margin-bottom:14px;width:fit-content}
+.verified-note.show{display:flex}
+.country-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:16px}
+.country-card{border-radius:12px;padding:14px 10px;cursor:pointer;transition:all 0.2s;text-align:center;border:0.5px solid transparent;position:relative}
+.country-card:hover{transform:translateY(-2px)}
+.verified-dot{position:absolute;top:6px;right:6px;width:16px;height:16px;border-radius:50%;background:var(--green);font-size:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
+.cc-flag{font-size:24px;margin-bottom:6px}
+.cc-name{font-size:12px;font-weight:500}
+.cc-sub{font-size:10px;margin-top:2px;opacity:0.65}
+.country-panel{border-radius:14px;border:0.5px solid var(--border);overflow:hidden;display:none;margin-bottom:24px}
+.country-panel.show{display:block}
+.cp-header{padding:18px 20px 14px;display:flex;align-items:center;gap:14px}
+.cp-flag{font-size:32px}
+.cp-name{font-size:18px;font-weight:500}
+.cp-tagline{font-size:12px;opacity:0.65;margin-top:3px}
+.cp-budget{font-size:12px;font-weight:500;padding:4px 12px;border-radius:20px;margin-left:auto}
+.vibe-row{display:flex;gap:7px;flex-wrap:wrap;padding:0 20px 14px}
+.vibe-pill{padding:4px 11px;border-radius:20px;font-size:11px;font-weight:500}
+.cp-sections{display:grid;grid-template-columns:1fr 1fr;border-top:0.5px solid rgba(255,255,255,0.07)}
+.cp-section{padding:14px 16px;border-right:0.5px solid rgba(255,255,255,0.07)}
+.cp-section:last-child,.cp-section.full{border-right:none}
+.cp-section.full{grid-column:1/-1}
+.cp-section-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;opacity:0.45}
+.cp-section-text{font-size:12px;line-height:1.65;opacity:0.82}
+.cp-places{display:flex;flex-wrap:wrap;gap:7px;padding:14px 20px;border-top:0.5px solid rgba(255,255,255,0.07)}
+.place-chip{padding:6px 13px;border-radius:20px;font-size:12px;cursor:pointer;transition:all 0.2s;border:0.5px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.8)}
+.place-chip:hover{background:rgba(255,255,255,0.14)}
+.cp-plan-btn{width:100%;padding:12px;border:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;color:#fff;transition:opacity 0.2s}
+.cp-plan-btn:hover{opacity:0.85}
+.cp-source{font-size:10px;color:var(--dim);padding:8px 20px;border-top:0.5px solid var(--border);font-style:italic}
+.sport-wrap{max-width:900px;margin:0 auto;padding:32px 24px}
+.sport-hero{text-align:center;margin-bottom:32px}
+.sport-hero h2{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;margin-bottom:8px}
+.sport-hero p{font-size:14px;color:var(--muted);max-width:480px;margin:0 auto}
+.about-wrap{max-width:680px;margin:0 auto;padding:48px 24px}
+.about-wrap h2{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;margin-bottom:20px}
+.about-wrap p{font-size:15px;color:var(--muted);line-height:1.8;margin-bottom:16px}
+.about-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:28px 0}
+.about-stat{background:var(--bg2);border:0.5px solid var(--border);border-radius:12px;padding:16px;text-align:center}
+.about-stat-num{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--green)}
+.about-stat-label{font-size:11px;color:var(--muted);margin-top:4px}
+.feedback-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:14px;padding:24px;margin-top:32px}
+.feedback-card h3{font-size:16px;font-weight:500;margin-bottom:8px}
+.feedback-card p{font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6}
+.feedback-form{display:flex;flex-direction:column;gap:10px}
+.feedback-form input,.feedback-form textarea,.feedback-form select{background:var(--bg);border:0.5px solid var(--border);border-radius:8px;padding:10px 13px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;width:100%}
+.feedback-form textarea{resize:none;height:90px}
+.feedback-form select option{background:var(--bg2)}
+.feedback-btn{background:var(--green);color:#fff;border:none;padding:11px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;width:100%;transition:background 0.2s}
+.feedback-btn:hover{background:var(--green-dark)}
+footer{border-top:0.5px solid var(--border);padding:24px;text-align:center;margin-top:48px}
+footer p{font-size:12px;color:var(--dim)}
+@media(max-width:600px){
+  .hero h1{font-size:28px}
+  .form-row{grid-template-columns:1fr}
+  .cp-sections{grid-template-columns:1fr}
+  .cp-section{border-right:none;border-bottom:0.5px solid rgba(255,255,255,0.07)}
+  .about-stats{grid-template-columns:1fr}
+  nav{padding:10px 14px}
+  .nav-btn{padding:6px 9px;font-size:11px}
+}
 </style>
 </head>
 <body>
@@ -181,7 +161,6 @@
       </div>
       <button class="hero-cta" onclick="showScreen('planner',document.querySelectorAll('.nav-btn')[1])">Plan my trip now</button>
     </div>
-
     <div style="padding:32px 0">
       <div class="section-label" style="text-align:center;margin-bottom:24px">Why PackdUp is different</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px">
@@ -238,7 +217,7 @@
           <span class="style-tag" onclick="this.classList.toggle('on')">Hiking & nature</span>
         </div>
       </div>
-      <div class="form-group"><div class="form-label">Anything else?</div><textarea id="extra" placeholder="Solo traveller, want to watch live football, need to earn money, travelling with a partner, specific cities..."></textarea></div>
+      <div class="form-group"><div class="form-label">Anything else?</div><textarea id="extra" placeholder="Solo traveller, want to watch live football, need to earn money, travelling with a partner..."></textarea></div>
       <button class="gen-btn" id="gen-btn" onclick="generateTrip()">✨ Generate my trip plan</button>
     </div>
     <div class="result-card" id="result-card">
@@ -248,6 +227,7 @@
       <div id="result-days"></div>
       <div class="tip-box" id="tip-box" style="display:none"><div class="tip-label">Insider tip</div><div class="tip-text" id="tip-text"></div></div>
       <div class="visa-box" id="visa-box" style="display:none"><div class="visa-label">Visa info</div><div class="visa-text" id="visa-text"></div></div>
+      <div class="error-box" id="error-box"></div>
     </div>
   </div>
 </div>
@@ -270,7 +250,7 @@
   </div>
 </div>
 
-<!-- SPORT & CULTURE -->
+<!-- SPORT -->
 <div class="screen" id="screen-sport">
   <div class="sport-wrap">
     <div class="sport-hero">
@@ -294,31 +274,30 @@
   <div class="about-wrap">
     <div class="eyebrow">Our story</div>
     <h2>Built by a backpacker,<br>for backpackers</h2>
-    <p>PackdUp was built out of frustration. Every travel app out there was either a hotel booking engine or a generic itinerary generator that had never heard of a working holiday visa, didn't know the difference between the backpacker trail and the tourist trail, and definitely couldn't tell you where to watch a live football match in Bogotá.</p>
-    <p>Our founder is an Irish backpacker who has visited every continent except Antarctica, spending years across Latin America, Asia, Australia, Europe and the USA — always on a backpacker budget, always chasing the real experience over the sanitised one.</p>
+    <p>PackdUp was built out of frustration. Every travel app out there was either a hotel booking engine or a generic itinerary generator with no real backpacker knowledge behind it.</p>
+    <p>Our founder is an Irish backpacker who has visited every continent except Antarctica — spending years across Latin America, Asia, Australia, Europe and the USA — always on a backpacker budget, always chasing the real experience.</p>
     <p>PackdUp combines that real firsthand knowledge with AI to give you honest, practical travel planning — budgets that are actually achievable, tips that don't appear on the first page of Google, and a genuine passion for sport, culture and food in every destination.</p>
     <div class="about-stats">
       <div class="about-stat"><div class="about-stat-num">195</div><div class="about-stat-label">Countries covered</div></div>
       <div class="about-stat"><div class="about-stat-num">6</div><div class="about-stat-label">Continents explored</div></div>
       <div class="about-stat"><div class="about-stat-num">37+</div><div class="about-stat-label">Personally visited</div></div>
     </div>
-    <p style="font-size:13px;color:var(--dim)">PackdUp is currently in beta. We're gathering feedback from real backpackers to build the best possible product. Everything is free while we're in beta — we'd love to know what you think.</p>
-
+    <p style="font-size:13px;color:var(--dim)">PackdUp is currently in beta. Everything is free while we gather feedback from real backpackers. We would love to know what you think.</p>
     <div class="feedback-card">
       <h3>Share your feedback</h3>
-      <p>We're in beta and your feedback directly shapes what we build next. What do you love? What's missing? What would you pay for?</p>
+      <p>We are in beta and your feedback directly shapes what we build next. What do you love? What is missing? What would you pay for?</p>
       <div class="feedback-form">
-        <input type="text" placeholder="Your name (optional)"/>
-        <input type="email" placeholder="Your email (optional — for updates)"/>
-        <select>
+        <input type="text" id="fb-name" placeholder="Your name (optional)"/>
+        <input type="email" id="fb-email" placeholder="Your email (optional — for updates)"/>
+        <select id="fb-used">
           <option value="">What did you use today?</option>
           <option>AI Trip Planner</option>
           <option>Explore countries</option>
           <option>Sport & culture guides</option>
           <option>Just browsing</option>
         </select>
-        <textarea placeholder="What did you think? What's missing? What would you love to see?"></textarea>
-        <button class="feedback-btn" onclick="submitFeedback(this)">Send feedback</button>
+        <textarea id="fb-message" placeholder="What did you think? What is missing? What would you love to see?"></textarea>
+        <button class="feedback-btn" id="fb-btn" onclick="submitFeedback()">Send feedback</button>
       </div>
     </div>
   </div>
@@ -329,192 +308,182 @@
 </footer>
 
 <script>
-const ANTHROPIC_KEY = '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';
-const UNSPLASH_KEY = 'k0i-jhsmuZeRWmlZWHRN4VYH9o-cnc8xgyggPzg4rGA';
-
-const regions = {
-  "Latin America": { barry: true, color: "#f59e0b", countries: [
-    { name:"Colombia", flag:"🇨🇴", color:"#f59e0b", bg:"rgba(245,158,11,0.12)", bd:"rgba(245,158,11,0.4)", tx:"#fcd34d", sub:"Colour & coffee", barry:true, budget:"€25-40/day", vibes:["Salsa","Coffee region","Football","Cartagena","Cumbia"], sport:"Football is a religion — Millonarios vs Santa Fe in Bogotá is electric. Cycling culture is deep, Colombians have produced world-class Tour de France climbers. Try tejo — a traditional throwing sport played with gunpowder.", culture:"Salsa in Cali is a serious art form — take a class, locals respect genuine effort. Medellín's transformation is remarkable. Colombians are extraordinarily warm and proud of their country.", food:"Bandeja paisa, arepas, empanadas, fresh tropical juices, tinto. The fruit variety here is unlike anywhere else on earth.", regions:["Bogotá","Medellín","Cartagena","Cali","Coffee Region","Tayrona","San Gil","Salento"] },
-    { name:"Peru", flag:"🇵🇪", color:"#dc2626", bg:"rgba(220,38,38,0.12)", bd:"rgba(220,38,38,0.4)", tx:"#fca5a5", sub:"Inca trails & ceviche", barry:true, budget:"€30-45/day", vibes:["Machu Picchu","Ceviche","Amazon","Inca history","Surfing"], sport:"Football passion runs deep — Alianza Lima vs Universitario is one of South America's great derbies. Surf culture is huge in Máncora and Huanchaco on the north coast.", culture:"The Inca history is genuinely mind-blowing — Cusco, Machu Picchu and the Sacred Valley reward slow travel. Altitude in Cusco is serious — acclimatise properly before hiking.", food:"Ceviche is the national obsession. Lima's food scene is world class — among the best in the world. Lomo saltado, ají de gallina, anticuchos, pisco sour.", regions:["Lima","Cusco","Machu Picchu","Arequipa","Máncora","Lake Titicaca","Huaraz","Amazon"] },
-    { name:"Bolivia", flag:"🇧🇴", color:"#16a34a", bg:"rgba(22,163,74,0.12)", bd:"rgba(22,163,74,0.4)", tx:"#86efac", sub:"Salt flats & altitude", barry:true, budget:"€20-30/day", vibes:["Salt flats","Death Road","La Paz","Budget travel","Altitude"], sport:"Football at altitude in La Paz at 3,600m is surreal — visiting teams visibly struggle. Bolivia's altitude advantage over Brazil and Argentina is well documented.", culture:"The most indigenous country in South America — Aymara and Quechua cultures are living and present, not just heritage. La Paz's witches market is unlike anything else.", food:"Salteñas for breakfast, api (purple corn drink), fricasé, llajwa hot sauce on everything. The cheapest country on the continent by a mile.", regions:["La Paz","Uyuni Salt Flats","Sucre","Potosí","Rurrenabaque","Copacabana","Death Road"] },
-    { name:"Argentina", flag:"🇦🇷", color:"#60a5fa", bg:"rgba(96,165,250,0.12)", bd:"rgba(96,165,250,0.4)", tx:"#bfdbfe", sub:"Football & Patagonia", barry:true, budget:"€30-50/day", vibes:["Football","Asado","Patagonia","Tango","Wine"], sport:"Argentine football culture is incomparable — watching Boca Juniors at La Bombonera is a bucket list experience. Rugby union is massive. Polo in Buenos Aires for something completely unique.", culture:"Buenos Aires locals (porteños) are European in character — great coffee, late dinners, passionate debate about football and politics. Patagonia requires proper planning — it is vast and wild.", food:"Asado is a social ritual, not just a meal. Empanadas vary by province. Malbec from Mendoza. Medialunas with coffee for breakfast every single day.", regions:["Buenos Aires","Mendoza","Patagonia","Bariloche","Salta","Iguazú Falls","El Calafate","Córdoba"] },
-    { name:"Brazil", flag:"🇧🇷", color:"#16a34a", bg:"rgba(22,163,74,0.12)", bd:"rgba(22,163,74,0.4)", tx:"#86efac", sub:"Carnival & football", barry:true, budget:"€35-55/day", vibes:["Football","Carnival","Amazon","Beaches","Capoeira"], sport:"Football in Brazil is spiritual. Flamengo vs Fluminense in Rio, Palmeiras vs Corinthians in São Paulo. Capoeira is both martial art and dance — watch it performed live in Salvador.", culture:"Brazil is enormous and wildly diverse. The south is almost European, the northeast is African-influenced, the Amazon is a world apart. Portuguese is essential.", food:"Feijoada on Saturdays is a national tradition. Açaí from street carts. Pão de queijo everywhere. Caipirinhas all day.", regions:["Rio de Janeiro","São Paulo","Salvador","Florianópolis","Manaus","Fernando de Noronha","Iguazú Falls"] },
-    { name:"Chile", flag:"🇨🇱", color:"#dc2626", bg:"rgba(220,38,38,0.12)", bd:"rgba(220,38,38,0.4)", tx:"#fca5a5", sub:"Atacama to Patagonia", barry:true, budget:"€40-60/day", vibes:["Atacama","Torres del Paine","Wine","Hiking","Surf"], sport:"Football — Colo-Colo vs Universidad de Chile is fierce. Chilean rodeo (very different from North American) is the national sport.", culture:"Chile is the most stable and developed in South America. The country is 4,300km long — an absurd geography from the driest desert to the wildest Patagonia.", food:"Empanadas de pino, cazuela, completos (the most loaded hot dog you'll ever see), carménère wine from the Colchagua Valley.", regions:["Santiago","Atacama Desert","Torres del Paine","Valparaíso","Lake District","Easter Island","San Pedro de Atacama"] }
+const regions={
+  "Latin America":{barry:true,countries:[
+    {name:"Colombia",flag:"🇨🇴",color:"#f59e0b",bg:"rgba(245,158,11,0.12)",bd:"rgba(245,158,11,0.4)",tx:"#fcd34d",sub:"Colour & coffee",barry:true,budget:"€25-40/day",vibes:["Salsa","Coffee region","Football","Cartagena","Cumbia"],sport:"Football is a religion — Millonarios vs Santa Fe in Bogotá is electric. Cycling culture is deep. Try tejo — a traditional throwing sport played with gunpowder.",culture:"Salsa in Cali is a serious art form. Medellín's transformation is remarkable. Colombians are extraordinarily warm and proud of their country.",food:"Bandeja paisa, arepas, empanadas, fresh tropical juices. The fruit variety here is unlike anywhere else on earth.",regions:["Bogotá","Medellín","Cartagena","Cali","Coffee Region","Tayrona","San Gil","Salento"]},
+    {name:"Peru",flag:"🇵🇪",color:"#dc2626",bg:"rgba(220,38,38,0.12)",bd:"rgba(220,38,38,0.4)",tx:"#fca5a5",sub:"Inca trails & ceviche",barry:true,budget:"€30-45/day",vibes:["Machu Picchu","Ceviche","Amazon","Inca history","Surfing"],sport:"Alianza Lima vs Universitario is one of South America's great derbies. Surf culture is huge in Máncora and Huanchaco.",culture:"The Inca history is genuinely mind-blowing. Altitude in Cusco is serious — acclimatise properly before hiking.",food:"Ceviche is the national obsession. Lima's food scene is world class. Lomo saltado, pisco sour.",regions:["Lima","Cusco","Machu Picchu","Arequipa","Máncora","Lake Titicaca","Huaraz","Amazon"]},
+    {name:"Bolivia",flag:"🇧🇴",color:"#16a34a",bg:"rgba(22,163,74,0.12)",bd:"rgba(22,163,74,0.4)",tx:"#86efac",sub:"Salt flats & altitude",barry:true,budget:"€20-30/day",vibes:["Salt flats","Death Road","La Paz","Budget travel","Altitude"],sport:"Football at altitude in La Paz at 3,600m is surreal — visiting teams visibly struggle.",culture:"The most indigenous country in South America — Aymara and Quechua cultures are living and present. La Paz's witches market is unlike anything else.",food:"Salteñas for breakfast, api (purple corn drink), fricasé. The cheapest country on the continent.",regions:["La Paz","Uyuni Salt Flats","Sucre","Potosí","Rurrenabaque","Copacabana","Death Road"]},
+    {name:"Argentina",flag:"🇦🇷",color:"#60a5fa",bg:"rgba(96,165,250,0.12)",bd:"rgba(96,165,250,0.4)",tx:"#bfdbfe",sub:"Football & Patagonia",barry:true,budget:"€30-50/day",vibes:["Football","Asado","Patagonia","Tango","Wine"],sport:"Watching Boca Juniors at La Bombonera is a bucket list experience. Rugby union is massive. Polo in Buenos Aires for something unique.",culture:"Buenos Aires locals are European in character — great coffee, late dinners, passionate debate. Patagonia is vast and wild.",food:"Asado is a social ritual. Empanadas vary by province. Malbec from Mendoza. Medialunas with coffee every morning.",regions:["Buenos Aires","Mendoza","Patagonia","Bariloche","Salta","Iguazú Falls","El Calafate","Córdoba"]},
+    {name:"Brazil",flag:"🇧🇷",color:"#16a34a",bg:"rgba(22,163,74,0.12)",bd:"rgba(22,163,74,0.4)",tx:"#86efac",sub:"Carnival & football",barry:true,budget:"€35-55/day",vibes:["Football","Carnival","Amazon","Beaches","Capoeira"],sport:"Flamengo vs Fluminense in Rio, Palmeiras vs Corinthians in São Paulo. Capoeira is both martial art and dance — watch it live in Salvador.",culture:"Brazil is enormous and wildly diverse. Portuguese is essential, English is limited outside tourist areas.",food:"Feijoada on Saturdays is a national tradition. Açaí from street carts. Caipirinhas all day.",regions:["Rio de Janeiro","São Paulo","Salvador","Florianópolis","Manaus","Fernando de Noronha","Iguazú Falls"]},
+    {name:"Chile",flag:"🇨🇱",color:"#dc2626",bg:"rgba(220,38,38,0.12)",bd:"rgba(220,38,38,0.4)",tx:"#fca5a5",sub:"Atacama to Patagonia",barry:true,budget:"€40-60/day",vibes:["Atacama","Torres del Paine","Wine","Hiking","Surf"],sport:"Colo-Colo vs Universidad de Chile is fierce. Chilean rodeo is the national sport.",culture:"Chile is the most stable in South America. The country is 4,300km long — an absurd geography.",food:"Empanadas de pino, cazuela, completos, carménère wine from the Colchagua Valley.",regions:["Santiago","Atacama Desert","Torres del Paine","Valparaíso","Lake District","Easter Island"]}
   ]},
-  "Asia": { barry: true, color: "#7c3aed", countries: [
-    { name:"Thailand", flag:"🇹🇭", color:"#7c3aed", bg:"rgba(124,58,237,0.12)", bd:"rgba(124,58,237,0.4)", tx:"#c4b5fd", sub:"Land of smiles", barry:true, budget:"€25-40/day", vibes:["Muay Thai","Street food","Islands","Temples","Full moon party"], sport:"Muay Thai is the national sport — train at a real gym in Chiang Mai, not a tourist show. Catch fights at Rajadamnern Stadium in Bangkok. Sepak takraw (kick volleyball) is played in parks everywhere.", culture:"Remove shoes at temples, never touch someone's head, wai as a greeting. Songkran water festival in April is the best party in Asia. The king is deeply revered.", food:"Pad see ew, boat noodles, mango sticky rice, green curry. Market stalls are always fresher and cheaper than restaurants. 7-Eleven food is genuinely excellent here.", regions:["Bangkok","Chiang Mai","Pai","Koh Phangan","Koh Tao","Koh Lanta","Koh Samui"] },
-    { name:"Vietnam", flag:"🇻🇳", color:"#dc2626", bg:"rgba(220,38,38,0.12)", bd:"rgba(220,38,38,0.4)", tx:"#fca5a5", sub:"Chaos & beauty", barry:true, budget:"€20-30/day", vibes:["Motorbikes","Pho","Halong Bay","History","Coffee culture"], sport:"Football has exploded in popularity. Locals fill cafes to watch the V.League and European football. Martial arts (Vovinam) has deep roots.", culture:"Travel north to south — they are very different. North is cooler, more reserved. South is loud and entrepreneurial. Hoi An is the cultural sweet spot of the whole country.", food:"Pho, banh mi, bun cha, cao lau, banh xeo. Each region has completely different dishes. Egg coffee in Hanoi is an experience.", regions:["Hanoi","Ha Giang","Halong Bay","Hoi An","Hue","Da Nang","Ho Chi Minh City","Mekong Delta"] },
-    { name:"Japan", flag:"🇯🇵", color:"#db2777", bg:"rgba(219,39,119,0.12)", bd:"rgba(219,39,119,0.4)", tx:"#f9a8d4", sub:"Ancient meets future", barry:false, budget:"€55-85/day", vibes:["Sumo","Ramen","Bullet trains","Cherry blossom","Temples"], sport:"Sumo tournaments happen 6 times a year. Baseball at Tokyo Dome is hugely popular. J-League football is growing fast and stadiums are excellent.", culture:"Quiet on trains, no eating while walking, bowing, remove shoes indoors. Onsen (hot spring) culture is communal and clothing-free — it is normal, embrace it.", food:"Ramen, sushi, tempura, takoyaki, okonomiyaki. Convenience store food (7-Eleven, FamilyMart) is surprisingly excellent and very cheap.", regions:["Tokyo","Kyoto","Osaka","Hiroshima","Nara","Hakone","Hokkaido","Okinawa"] },
-    { name:"Indonesia", flag:"🇮🇩", color:"#dc2626", bg:"rgba(220,38,38,0.12)", bd:"rgba(220,38,38,0.4)", tx:"#fca5a5", sub:"17,000 islands", barry:true, budget:"€20-35/day", vibes:["Bali","Surfing","Temples","Volcanoes","Diving"], sport:"Badminton is the national obsession — Indonesia dominates the world rankings. Football is massive with incredibly passionate supporters.", culture:"The most Muslim-majority country in the world but extraordinarily diverse — Bali is Hindu, Flores is Catholic, Kalimantan is animist. Respect dress codes at temples.", food:"Nasi goreng, satay, rendang, gado-gado, nasi campur. Warungs (small family restaurants) serve the best food at the lowest prices.", regions:["Bali","Lombok","Yogyakarta","Raja Ampat","Komodo","Flores","Sulawesi","Sumatra"] }
+  "Asia":{barry:true,countries:[
+    {name:"Thailand",flag:"🇹🇭",color:"#7c3aed",bg:"rgba(124,58,237,0.12)",bd:"rgba(124,58,237,0.4)",tx:"#c4b5fd",sub:"Land of smiles",barry:true,budget:"€25-40/day",vibes:["Muay Thai","Street food","Islands","Temples","Full moon party"],sport:"Muay Thai — train at a real gym in Chiang Mai, catch fights at Rajadamnern Stadium in Bangkok.",culture:"Remove shoes at temples, never touch someone's head. Songkran water festival in April is the best party in Asia.",food:"Pad see ew, boat noodles, mango sticky rice, green curry. Market stalls always fresher than restaurants.",regions:["Bangkok","Chiang Mai","Pai","Koh Phangan","Koh Tao","Koh Lanta"]},
+    {name:"Vietnam",flag:"🇻🇳",color:"#dc2626",bg:"rgba(220,38,38,0.12)",bd:"rgba(220,38,38,0.4)",tx:"#fca5a5",sub:"Chaos & beauty",barry:true,budget:"€20-30/day",vibes:["Motorbikes","Pho","Halong Bay","History","Coffee"],sport:"Football has exploded in popularity — locals fill cafes to watch V.League and European football.",culture:"North is cooler and more reserved. South is loud and entrepreneurial. Hoi An is the cultural sweet spot.",food:"Pho, banh mi, bun cha, cao lau. Each region has completely different dishes. Egg coffee in Hanoi is unmissable.",regions:["Hanoi","Ha Giang","Halong Bay","Hoi An","Hue","Ho Chi Minh City","Mekong Delta"]},
+    {name:"Japan",flag:"🇯🇵",color:"#db2777",bg:"rgba(219,39,119,0.12)",bd:"rgba(219,39,119,0.4)",tx:"#f9a8d4",sub:"Ancient meets future",barry:false,budget:"€55-85/day",vibes:["Sumo","Ramen","Bullet trains","Cherry blossom","Temples"],sport:"Sumo tournaments 6 times a year. Baseball at Tokyo Dome. J-League football is growing fast.",culture:"Quiet on trains, no eating while walking. Onsen culture is communal and clothing-free — embrace it.",food:"Ramen, sushi, tempura, takoyaki. Convenience store food is surprisingly excellent and very cheap.",regions:["Tokyo","Kyoto","Osaka","Hiroshima","Nara","Hakone","Hokkaido"]},
+    {name:"Indonesia",flag:"🇮🇩",color:"#dc2626",bg:"rgba(220,38,38,0.12)",bd:"rgba(220,38,38,0.4)",tx:"#fca5a5",sub:"17,000 islands",barry:true,budget:"€20-35/day",vibes:["Bali","Surfing","Temples","Volcanoes","Diving"],sport:"Badminton is the national obsession — Indonesia dominates world rankings. Football is massive.",culture:"The most Muslim-majority country in the world but extraordinarily diverse. Respect dress codes at temples.",food:"Nasi goreng, satay, rendang, gado-gado. Warungs serve the best food at the lowest prices.",regions:["Bali","Lombok","Yogyakarta","Raja Ampat","Komodo","Flores","Sumatra"]}
   ]},
-  "Australia & Pacific": { barry: true, color: "#0369a1", countries: [
-    { name:"Australia", flag:"🇦🇺", color:"#0369a1", bg:"rgba(3,105,161,0.12)", bd:"rgba(3,105,161,0.4)", tx:"#7dd3fc", sub:"Big, wild & sunny", barry:true, budget:"€80-120/day", vibes:["WHV","Cricket","AFL","Outback","Beaches"], sport:"AFL is unlike any other sport — catch a game at the MCG in Melbourne. Cricket at the SCG in summer. Rugby league in NSW and QLD. GAA clubs in every major city for the Irish community.", culture:"Extremely outdoor-focused lifestyle. BBQs are social rituals. Mateship culture is real. Working holiday visa community is huge and welcoming.", food:"Flat whites (the coffee is world class), Tim Tams, meat pies, barramundi fish and chips, vegemite on toast. Sunday sessions at a pub with a beer garden.", regions:["Perth","Darwin","Sydney","Melbourne","Brisbane","Cairns","Byron Bay","Uluru","Gold Coast"] },
-    { name:"New Zealand", flag:"🇳🇿", color:"#1D9E75", bg:"rgba(29,158,117,0.12)", bd:"rgba(29,158,117,0.4)", tx:"#5DCAA5", sub:"Landscape & All Blacks", barry:false, budget:"€70-100/day", vibes:["Rugby","Hiking","Bungee","Maori culture","Road trips"], sport:"The All Blacks are the most successful sports team in history. A test match at Eden Park in Auckland is electric. The haka is not a performance — it is spiritual.", culture:"Maori culture is present and respected throughout the country. NZ is genuinely clean, safe and staggeringly beautiful.", food:"Hangi (earth oven feast), whitebait fritters, lamb, pavlova, L&P lemonade, Whittaker's chocolate.", regions:["Auckland","Queenstown","Rotorua","Wellington","Milford Sound","Abel Tasman","Christchurch"] }
+  "Australia & Pacific":{barry:true,countries:[
+    {name:"Australia",flag:"🇦🇺",color:"#0369a1",bg:"rgba(3,105,161,0.12)",bd:"rgba(3,105,161,0.4)",tx:"#7dd3fc",sub:"Big, wild & sunny",barry:true,budget:"€80-120/day",vibes:["WHV","Cricket","AFL","Outback","Beaches"],sport:"AFL at the MCG in Melbourne. Cricket at the SCG. Rugby league in NSW and QLD. GAA clubs in every major city.",culture:"Outdoor-focused lifestyle. BBQs are social rituals. Working holiday visa community is huge and welcoming.",food:"Flat whites (world class coffee), Tim Tams, meat pies, barramundi fish and chips.",regions:["Perth","Darwin","Sydney","Melbourne","Brisbane","Cairns","Byron Bay","Uluru"]},
+    {name:"New Zealand",flag:"🇳🇿",color:"#1D9E75",bg:"rgba(29,158,117,0.12)",bd:"rgba(29,158,117,0.4)",tx:"#5DCAA5",sub:"Landscape & All Blacks",barry:false,budget:"€70-100/day",vibes:["Rugby","Hiking","Bungee","Maori culture","Road trips"],sport:"The All Blacks are the most successful sports team in history. A test at Eden Park with the haka is spine-tingling.",culture:"Maori culture is present and respected. NZ is genuinely clean, safe and staggeringly beautiful.",food:"Hangi, whitebait fritters, lamb, pavlova, Whittaker's chocolate.",regions:["Auckland","Queenstown","Rotorua","Wellington","Milford Sound","Abel Tasman","Christchurch"]}
   ]},
-  "Europe": { barry: true, color: "#2563eb", countries: [
-    { name:"Ireland", flag:"🇮🇪", color:"#16a34a", bg:"rgba(22,163,74,0.12)", bd:"rgba(22,163,74,0.4)", tx:"#86efac", sub:"Wild craic & green", barry:true, budget:"€65-95/day", vibes:["GAA","Trad music","Pubs","Cliffs","Craic"], sport:"GAA is unlike anything in world sport — Gaelic football and hurling are amateur, tribal and electric. An All-Ireland final in Croke Park is a bucket list experience.", culture:"The pub is the heart of Irish social life — music, chat and community. Traditional sessions happen spontaneously. The west coast (Galway, Clare, Kerry) has the strongest culture.", food:"Full Irish breakfast, soda bread, seafood chowder on the west coast, Tayto crisps. Guinness genuinely tastes better in Ireland.", regions:["Dublin","Galway","Cork","Kerry","Dingle","Donegal","Clare","Belfast","Connemara"] },
-    { name:"Spain", flag:"🇪🇸", color:"#dc2626", bg:"rgba(220,38,38,0.12)", bd:"rgba(220,38,38,0.4)", tx:"#fca5a5", sub:"Football & fiesta", barry:true, budget:"€45-70/day", vibes:["La Liga","Tapas","Flamenco","Beaches","Siesta culture"], sport:"El Clásico is the biggest club match on earth. A La Liga game at Camp Nou or Bernabéu is electric. Pelota Vasca in the Basque Country is wild to watch.", culture:"Siesta is real — everything closes 2-5pm. Dinner at 10pm is normal. Each region has a completely different identity — Catalonia, Basque Country and Andalusia are almost different countries.", food:"Jamón ibérico, patatas bravas, tortilla española, gazpacho. San Sebastián has the most Michelin stars per capita of any city on earth — the pintxos bars alone are worth the trip.", regions:["Barcelona","Madrid","Seville","San Sebastián","Valencia","Granada","Bilbao","Mallorca"] },
-    { name:"Portugal", flag:"🇵🇹", color:"#b45309", bg:"rgba(180,83,9,0.12)", bd:"rgba(180,83,9,0.4)", tx:"#fcd34d", sub:"Fado & pastéis", barry:true, budget:"€40-60/day", vibes:["Surfing","Fado music","Pastel de nata","Cheap wine","History"], sport:"Football is taken as seriously as in Brazil. Benfica vs Porto is a fierce rivalry. Surfing at Nazaré (biggest waves in the world) and Peniche is world class.", culture:"Saudade — a uniquely Portuguese melancholy and longing — is in the music, food and people. Lisbon's Alfama neighbourhood at night with fado music is magical.", food:"Pastel de nata, bacalhau (salt cod, 365 recipes), francesinha in Porto, grilled sardines, Super Bock beer. Incredible value.", regions:["Lisbon","Porto","Algarve","Sintra","Douro Valley","Nazaré","Azores"] }
+  "Europe":{barry:true,countries:[
+    {name:"Ireland",flag:"🇮🇪",color:"#16a34a",bg:"rgba(22,163,74,0.12)",bd:"rgba(22,163,74,0.4)",tx:"#86efac",sub:"Wild craic & green",barry:true,budget:"€65-95/day",vibes:["GAA","Trad music","Pubs","Cliffs","Craic"],sport:"GAA is unlike anything in world sport — an All-Ireland final in Croke Park is a bucket list experience.",culture:"The pub is the heart of Irish social life — music, chat and community. Traditional sessions happen spontaneously.",food:"Full Irish breakfast, soda bread, seafood chowder on the west coast. Guinness tastes better in Ireland.",regions:["Dublin","Galway","Cork","Kerry","Dingle","Donegal","Clare","Belfast"]},
+    {name:"Spain",flag:"🇪🇸",color:"#dc2626",bg:"rgba(220,38,38,0.12)",bd:"rgba(220,38,38,0.4)",tx:"#fca5a5",sub:"Football & fiesta",barry:true,budget:"€45-70/day",vibes:["La Liga","Tapas","Flamenco","Beaches","Siesta"],sport:"El Clásico is the biggest club match on earth. A La Liga game at Camp Nou or Bernabéu is electric.",culture:"Siesta is real — everything closes 2-5pm. Dinner at 10pm is normal. Each region has a completely different identity.",food:"Jamón ibérico, patatas bravas, tortilla española. San Sebastián has the most Michelin stars per capita on earth.",regions:["Barcelona","Madrid","Seville","San Sebastián","Valencia","Granada","Bilbao"]},
+    {name:"Portugal",flag:"🇵🇹",color:"#b45309",bg:"rgba(180,83,9,0.12)",bd:"rgba(180,83,9,0.4)",tx:"#fcd34d",sub:"Fado & pastéis",barry:true,budget:"€40-60/day",vibes:["Surfing","Fado","Pastel de nata","Cheap wine","History"],sport:"Football is taken as seriously as in Brazil. Surfing at Nazaré has the biggest waves in the world.",culture:"Saudade — a uniquely Portuguese melancholy — is in the music and the people. Lisbon's Alfama at night is magical.",food:"Pastel de nata, bacalhau (365 recipes), francesinha in Porto, grilled sardines. Incredible value.",regions:["Lisbon","Porto","Algarve","Sintra","Douro Valley","Nazaré","Azores"]}
   ]},
-  "USA & Canada": { barry: true, color: "#0369a1", countries: [
-    { name:"USA", flag:"🇺🇸", color:"#dc2626", bg:"rgba(220,38,38,0.12)", bd:"rgba(220,38,38,0.4)", tx:"#fca5a5", sub:"Vast & varied", barry:true, budget:"€60-100/day", vibes:["Road trips","Baseball","National Parks","NYC","Country music"], sport:"American sport culture is unique — NBA, NFL, MLB and NHL all have passionate followings. Attending a live game in any city is a cultural experience. College football atmospheres are unlike anything in professional sport.", culture:"America is not one culture — New York and rural Texas are different planets. Road trips unlock the real country. National Parks are genuinely unmissable.", food:"Regional food is everything — BBQ in Texas, clam chowder in Boston, po'boys in New Orleans, In-N-Out in California. Always tip — it is not optional.", regions:["New York","New Orleans","Los Angeles","Chicago","Nashville","San Francisco","National Parks","Miami"] }
+  "USA & Canada":{barry:true,countries:[
+    {name:"USA",flag:"🇺🇸",color:"#dc2626",bg:"rgba(220,38,38,0.12)",bd:"rgba(220,38,38,0.4)",tx:"#fca5a5",sub:"Vast & varied",barry:true,budget:"€60-100/day",vibes:["Road trips","Baseball","National Parks","NYC","Country music"],sport:"NBA, NFL, MLB and NHL all have passionate followings. Attending a live game in any city is a cultural experience.",culture:"America is not one culture — New York and rural Texas are different planets. Road trips unlock the real country.",food:"Regional food is everything — BBQ in Texas, clam chowder in Boston, po'boys in New Orleans. Always tip.",regions:["New York","New Orleans","Los Angeles","Chicago","Nashville","San Francisco","National Parks","Miami"]}
   ]},
-  "Africa": { barry: false, color: "#b45309", countries: [
-    { name:"Morocco", flag:"🇲🇦", color:"#b45309", bg:"rgba(180,83,9,0.12)", bd:"rgba(180,83,9,0.4)", tx:"#fcd34d", sub:"Spice & soul", barry:false, budget:"€25-40/day", vibes:["Souks","Sahara","Mint tea","Medinas","Tagine"], sport:"Football is a religion — Raja Casablanca vs Wydad is one of Africa's most passionate derbies. Morocco's 2022 World Cup semi-final run was a moment of national pride.", culture:"Ramadan changes everything — plan around it or embrace it. Friday is holy. Bargaining in souks is expected and fun. Learn 3 words of Darija and locals will respond warmly.", food:"Tagine, couscous on Fridays, harira soup, msemen flatbread, fresh orange juice everywhere for 50 cents.", regions:["Marrakech","Fes","Chefchaouen","Merzouga","Essaouira","Casablanca","Tangier"] },
-    { name:"South Africa", flag:"🇿🇦", color:"#16a34a", bg:"rgba(22,163,74,0.12)", bd:"rgba(22,163,74,0.4)", tx:"#86efac", sub:"Rainbow nation", barry:false, budget:"€35-55/day", vibes:["Safari","Rugby","Braai","Cape Town","Diverse cultures"], sport:"Rugby union is the national obsession — the Springboks are among the best teams in history. A Springboks test at Ellis Park is electric.", culture:"11 official languages — the cultural diversity is astonishing. Ubuntu philosophy shapes social life. Be safety-aware in cities — use Uber rather than street taxis.", food:"Braai is a cultural institution. Biltong, boerewors, bunny chow in Durban, malva pudding. Superb wine from Stellenbosch.", regions:["Cape Town","Johannesburg","Kruger Park","Garden Route","Drakensberg","Stellenbosch","Durban"] }
+  "Africa":{barry:false,countries:[
+    {name:"Morocco",flag:"🇲🇦",color:"#b45309",bg:"rgba(180,83,9,0.12)",bd:"rgba(180,83,9,0.4)",tx:"#fcd34d",sub:"Spice & soul",barry:false,budget:"€25-40/day",vibes:["Souks","Sahara","Mint tea","Medinas","Tagine"],sport:"Raja Casablanca vs Wydad is one of Africa's most passionate derbies. Morocco's 2022 World Cup semi-final run was a national moment.",culture:"Ramadan changes everything. Bargaining in souks is expected. Learn 3 words of Darija and locals will respond warmly.",food:"Tagine, couscous on Fridays, harira soup, fresh orange juice everywhere for 50 cents.",regions:["Marrakech","Fes","Chefchaouen","Merzouga","Essaouira","Casablanca"]},
+    {name:"South Africa",flag:"🇿🇦",color:"#16a34a",bg:"rgba(22,163,74,0.12)",bd:"rgba(22,163,74,0.4)",tx:"#86efac",sub:"Rainbow nation",barry:false,budget:"€35-55/day",vibes:["Safari","Rugby","Braai","Cape Town","Diverse cultures"],sport:"The Springboks are among the best rugby teams in history. A test at Ellis Park is electric.",culture:"11 official languages — the cultural diversity is astonishing. Use Uber in cities rather than street taxis.",food:"Braai is a cultural institution. Biltong, boerewors, bunny chow in Durban. Superb wine from Stellenbosch.",regions:["Cape Town","Johannesburg","Kruger Park","Garden Route","Drakensberg","Stellenbosch"]}
   ]},
-  "Middle East": { barry: false, color: "#7c3aed", countries: [
-    { name:"Jordan", flag:"🇯🇴", color:"#b45309", bg:"rgba(180,83,9,0.12)", bd:"rgba(180,83,9,0.4)", tx:"#fcd34d", sub:"Petra & desert", barry:false, budget:"€40-60/day", vibes:["Petra","Wadi Rum","Dead Sea","Hospitality","History"], sport:"Football is popular locally. Camel racing is a traditional spectacle in desert regions.", culture:"Jordanian hospitality is legendary — accepting tea is respect, not optional. Petra is genuinely jaw-dropping. Wadi Rum at night under the stars is life-changing.", food:"Mansaf (lamb in fermented yoghurt) eaten from a communal tray. Falafel, hummus, fattoush, mint tea constantly.", regions:["Amman","Petra","Wadi Rum","Dead Sea","Aqaba","Jerash"] },
-    { name:"Georgia", flag:"🇬🇪", color:"#dc2626", bg:"rgba(220,38,38,0.12)", bd:"rgba(220,38,38,0.4)", tx:"#fca5a5", sub:"Wine, mountains & soul", barry:false, budget:"€25-40/day", vibes:["Wine","Caucasus hiking","Tbilisi nightlife","Food","History"], sport:"Wrestling has deep roots — Georgian wrestlers dominate internationally. Rugby union is surprisingly popular and passionate.", culture:"One of the world's oldest wine regions — wine is a tradition and a way of life here. Tbilisi's old town is genuinely atmospheric. Georgians are exceptionally warm hosts.", food:"Khachapuri (cheese bread boat with egg) is one of the great street foods in the world. Khinkali dumplings, churchkhela, natural wines.", regions:["Tbilisi","Kazbegi","Batumi","Kakheti wine region","Kutaisi","Mestia"] }
+  "Middle East":{barry:false,countries:[
+    {name:"Jordan",flag:"🇯🇴",color:"#b45309",bg:"rgba(180,83,9,0.12)",bd:"rgba(180,83,9,0.4)",tx:"#fcd34d",sub:"Petra & desert",barry:false,budget:"€40-60/day",vibes:["Petra","Wadi Rum","Dead Sea","Hospitality","History"],sport:"Football is popular locally. Camel racing is a traditional spectacle in desert regions.",culture:"Jordanian hospitality is legendary — accepting tea is respect, not optional. Wadi Rum at night under the stars is life-changing.",food:"Mansaf eaten from a communal tray. Falafel, hummus, fattoush, mint tea constantly.",regions:["Amman","Petra","Wadi Rum","Dead Sea","Aqaba","Jerash"]},
+    {name:"Georgia",flag:"🇬🇪",color:"#dc2626",bg:"rgba(220,38,38,0.12)",bd:"rgba(220,38,38,0.4)",tx:"#fca5a5",sub:"Wine, mountains & soul",barry:false,budget:"€25-40/day",vibes:["Wine","Caucasus hiking","Tbilisi nightlife","Food","History"],sport:"Wrestling has deep roots — Georgian wrestlers dominate internationally. Rugby union is surprisingly popular.",culture:"One of the world's oldest wine regions. Tbilisi's old town is genuinely atmospheric. Georgians are exceptional hosts.",food:"Khachapuri is one of the great street foods in the world. Khinkali dumplings, natural wines.",regions:["Tbilisi","Kazbegi","Batumi","Kakheti wine region","Kutaisi","Mestia"]}
   ]}
 };
 
-const sportData = [
-  { name:"Live football", flag:"⚽", color:"#16a34a", bg:"rgba(22,163,74,0.12)", bd:"rgba(22,163,74,0.4)", tx:"#86efac", sub:"Find a derby anywhere", budget:"€5-30 per match", vibes:["Ultra culture","Local derbies","Cheap tickets","Authentic atmosphere"], sport:"South America has the most passionate football culture on earth — a Boca Juniors game in Buenos Aires or Flamengo in Rio is unlike anything in European football. Sit in the terrace sections.", culture:"Buy tickets at the gate for local leagues — no app needed. Learn the home team name and one chant before you arrive. Ultras sections are safe if you respect the culture.", food:"Choripan in Argentina, coxinha in Brazil, meat pies in England, sticky rice in Thailand. Each stadium has its own local food culture.", regions:["Buenos Aires","Rio de Janeiro","Bogotá","Istanbul","Cairo","Lagos","Bangkok","Madrid"] },
-  { name:"GAA abroad", flag:"🏐", color:"#16a34a", bg:"rgba(22,163,74,0.12)", bd:"rgba(22,163,74,0.4)", tx:"#86efac", sub:"Irish sport, every continent", budget:"Free to play", vibes:["Irish community","Job leads","Social life","Every continent"], sport:"GAA clubs exist on every continent. Turning up instantly connects you with the Irish community — social events, accommodation tips, job leads and craic. Our founder plays GAA in Perth, Western Australia.", culture:"Turn up in your county jersey, introduce yourself and you are in. The GAA abroad community is the most welcoming in the world. County jerseys travel better than club jerseys for recognition.", food:"Usually ends at an Irish pub — wherever in the world you are.", regions:["Perth","Sydney","New York","London","Dubai","Singapore","Berlin","Toronto","Buenos Aires"] },
-  { name:"Muay Thai", flag:"🥊", color:"#7c3aed", bg:"rgba(124,58,237,0.12)", bd:"rgba(124,58,237,0.4)", tx:"#c4b5fd", sub:"Thailand's living art", budget:"€10-20/day training", vibes:["Training camps","Live fights","Discipline","Cultural immersion"], sport:"Train at a real gym in Chiang Mai for a week — genuinely life-changing. Bangkok's Rajadamnern and Lumpinee Stadiums host the best professional fights. Avoid the tourist shows on Koh Samui.", culture:"The Wai Kru pre-fight ritual honours teachers and is deeply spiritual. The mongkhon headband is sacred. Treat it with respect — you are stepping into a living tradition.", food:"Train hard in the morning, eat rice and eggs, pad krapow. The training lifestyle is as much the experience as the fighting itself.", regions:["Chiang Mai","Bangkok","Koh Phangan","Pai","Phuket"] },
-  { name:"Rugby culture", flag:"🏉", color:"#b45309", bg:"rgba(180,83,9,0.12)", bd:"rgba(180,83,9,0.4)", tx:"#fcd34d", sub:"Southern hemisphere passion", budget:"€20-80 per match", vibes:["All Blacks","Springboks","Six Nations","Physical spectacle","Pub culture"], sport:"An All Blacks test at Eden Park with the haka is the most spine-tingling sporting entrance in the world. A Springboks test in Johannesburg is electric. The Six Nations in Dublin, Cardiff or Edinburgh is a festival.", culture:"Rugby cultures in NZ, South Africa and Australia are tribal and deeply social. The post-match atmosphere in the pub is as much a part of the experience as the match itself.", food:"Pies in New Zealand and Australia. Braai and beer in South Africa. Full Irish breakfast before a match in Dublin.", regions:["Auckland","Johannesburg","Dublin","Cardiff","Edinburgh","Sydney","Buenos Aires"] },
-  { name:"Cricket culture", flag:"🏏", color:"#0369a1", bg:"rgba(3,105,161,0.12)", bd:"rgba(3,105,161,0.4)", tx:"#7dd3fc", sub:"India, Aus & Caribbean", budget:"€10-60 per match", vibes:["Test matches","IPL","Beach cricket","Community"], sport:"A Test match at the MCG or SCG in Australia is a bucket list experience. The IPL in India is pure spectacle and theatre. Village cricket in England on a summer evening is quintessentially peaceful.", culture:"In India cricket is religion — ask a local about their team and you will have a friend for life. In the Caribbean, beach cricket is spontaneous and joyful.", food:"MCG pies in Melbourne, chai and samosas at Indian grounds, rum punch in the Caribbean.", regions:["Melbourne","Mumbai","Kolkata","Bridgetown","London","Colombo","Durban"] },
-  { name:"Festival culture", flag:"🎉", color:"#db2777", bg:"rgba(219,39,119,0.12)", bd:"rgba(219,39,119,0.4)", tx:"#f9a8d4", sub:"Celebrations worldwide", budget:"€20-100 per event", vibes:["Carnival","Songkran","Oktoberfest","Holi","Semana Santa"], sport:"Festival culture and sport overlap everywhere — carnival in Rio coincides with beach football, Songkran in Thailand sees Muay Thai demonstrations, Oktoberfest has traditional Bavarian sports.", culture:"Plan your travel around major festivals and you will experience places at their most alive. Carnival in Rio or Barranquilla, Semana Santa in Seville or Antigua, Holi in Varanasi, Songkran in Chiang Mai.", food:"Every festival has its own food culture — churros and wine at Semana Santa, gingerbread at Christmas markets, coconut milk drinks at Songkran.", regions:["Rio de Janeiro","Barranquilla","Seville","Varanasi","Chiang Mai","Munich","Pamplona","Venice"] }
+const sportData=[
+  {name:"Live football",flag:"⚽",color:"#16a34a",bg:"rgba(22,163,74,0.12)",bd:"rgba(22,163,74,0.4)",tx:"#86efac",sub:"Find a derby anywhere",budget:"€5-30 per match",vibes:["Ultra culture","Local derbies","Cheap tickets","Atmosphere"],sport:"South America has the most passionate football culture on earth — Boca Juniors in Buenos Aires or Flamengo in Rio is unlike anything in European football.",culture:"Buy tickets at the gate for local leagues. Learn the home team name and one chant before you arrive.",food:"Choripan in Argentina, coxinha in Brazil, meat pies in England, sticky rice in Thailand.",regions:["Buenos Aires","Rio de Janeiro","Bogotá","Istanbul","Cairo","Lagos","Bangkok","Madrid"]},
+  {name:"GAA abroad",flag:"🏐",color:"#16a34a",bg:"rgba(22,163,74,0.12)",bd:"rgba(22,163,74,0.4)",tx:"#86efac",sub:"Irish sport, every continent",budget:"Free to play",vibes:["Irish community","Job leads","Social life","Every continent"],sport:"GAA clubs exist on every continent. Turning up instantly connects you with the Irish community — our founder plays GAA in Perth, Western Australia.",culture:"Turn up in your county jersey, introduce yourself and you are in. The GAA abroad community is the most welcoming in the world.",food:"Usually ends at an Irish pub — wherever in the world you are.",regions:["Perth","Sydney","New York","London","Dubai","Singapore","Berlin","Toronto","Buenos Aires"]},
+  {name:"Muay Thai",flag:"🥊",color:"#7c3aed",bg:"rgba(124,58,237,0.12)",bd:"rgba(124,58,237,0.4)",tx:"#c4b5fd",sub:"Thailand's living art",budget:"€10-20/day training",vibes:["Training camps","Live fights","Discipline","Cultural immersion"],sport:"Train at a real gym in Chiang Mai for a week — genuinely life-changing. Bangkok's Rajadamnern and Lumpinee Stadiums host the best fights.",culture:"The Wai Kru pre-fight ritual honours teachers and is deeply spiritual. Treat it with respect.",food:"Train hard in the morning, eat rice and eggs. The training lifestyle is as much the experience as the fighting.",regions:["Chiang Mai","Bangkok","Koh Phangan","Pai","Phuket"]},
+  {name:"Rugby culture",flag:"🏉",color:"#b45309",bg:"rgba(180,83,9,0.12)",bd:"rgba(180,83,9,0.4)",tx:"#fcd34d",sub:"Southern hemisphere passion",budget:"€20-80 per match",vibes:["All Blacks","Springboks","Six Nations","Pub culture"],sport:"An All Blacks test at Eden Park with the haka is the most spine-tingling sporting entrance in the world.",culture:"Rugby cultures in NZ, South Africa and Australia are tribal and deeply social.",food:"Pies in New Zealand and Australia. Braai in South Africa. Full Irish breakfast before a match in Dublin.",regions:["Auckland","Johannesburg","Dublin","Cardiff","Edinburgh","Sydney","Buenos Aires"]},
+  {name:"Cricket culture",flag:"🏏",color:"#0369a1",bg:"rgba(3,105,161,0.12)",bd:"rgba(3,105,161,0.4)",tx:"#7dd3fc",sub:"India, Aus & Caribbean",budget:"€10-60 per match",vibes:["Test matches","IPL","Beach cricket","Community"],sport:"A Test match at the MCG or SCG in Australia is a bucket list experience. The IPL in India is pure spectacle.",culture:"In India cricket is religion — ask a local about their team and you will have a friend for life.",food:"MCG pies in Melbourne, chai and samosas at Indian grounds, rum punch in the Caribbean.",regions:["Melbourne","Mumbai","Kolkata","Bridgetown","London","Colombo","Durban"]},
+  {name:"Festival culture",flag:"🎉",color:"#db2777",bg:"rgba(219,39,119,0.12)",bd:"rgba(219,39,119,0.4)",tx:"#f9a8d4",sub:"Celebrations worldwide",budget:"€20-100 per event",vibes:["Carnival","Songkran","Oktoberfest","Holi","Semana Santa"],sport:"Plan your travel around major festivals and you will experience places at their most alive.",culture:"Carnival in Rio, Semana Santa in Seville, Holi in Varanasi, Songkran in Chiang Mai — each is unforgettable.",food:"Every festival has its own food culture — churros at Semana Santa, gingerbread at Christmas markets.",regions:["Rio de Janeiro","Barranquilla","Seville","Varanasi","Chiang Mai","Munich","Pamplona"]}
 ];
 
-function showScreen(id, btn) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('screen-' + id).classList.add('active');
-  if (btn) btn.classList.add('active');
-  window.scrollTo(0, 0);
+let currentCountries=[];
+
+function showScreen(id,btn){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+  if(btn) btn.classList.add('active');
+  window.scrollTo(0,0);
 }
 
-function buildRegionTabs() {
-  const el = document.getElementById('region-tabs');
-  el.innerHTML = Object.keys(regions).map(r =>
-    `<button class="rtab${regions[r].barry ? ' barry' : ''}" onclick="selectRegion('${r}', this)">${r}${regions[r].barry ? ' ✓' : ''}</button>`
-  ).join('');
+function buildRegionTabs(){
+  const el=document.getElementById('region-tabs');
+  el.innerHTML=Object.keys(regions).map(r=>`<button class="rtab${regions[r].barry?' barry':''}" onclick="selectRegion('${r}',this)">${r}${regions[r].barry?' ✓':''}</button>`).join('');
 }
 
-function selectRegion(name, btn) {
-  document.querySelectorAll('.rtab').forEach(t => t.classList.remove('active'));
+function selectRegion(name,btn){
+  document.querySelectorAll('.rtab').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
-  const r = regions[name];
-  const note = document.getElementById('verified-note');
-  note.classList.toggle('show', r.barry);
-  renderGrid(r.countries, 'country-grid', 'country-panel', 'cp-header', 'cp-vibes', 'cp-sections', 'cp-places', 'cp-plan-btn', 'cp-source');
+  const r=regions[name];
+  currentCountries=r.countries;
+  document.getElementById('verified-note').classList.toggle('show',r.barry);
+  renderGrid(r.countries,'country-grid','country-panel','cp-header','cp-vibes','cp-sections','cp-places','cp-plan-btn','cp-source');
   document.getElementById('country-panel').classList.remove('show');
 }
 
-function renderGrid(data, gridId, panelId, headId, vibesId, sectId, placesId, btnId, sourceId) {
-  const g = document.getElementById(gridId);
-  g.innerHTML = data.map((c, i) =>
-    `<div class="country-card" style="background:${c.bg};border-color:${c.bd}" onclick="openCountry(${i},'${gridId}','${panelId}','${headId}','${vibesId}','${sectId}','${placesId}','${btnId}','${sourceId||''}')">
-      ${c.barry ? '<div class="verified-dot">✓</div>' : ''}
+function renderGrid(data,gridId,panelId,headId,vibesId,sectId,placesId,btnId,sourceId){
+  document.getElementById(gridId).innerHTML=data.map((c,i)=>`
+    <div class="country-card" style="background:${c.bg};border-color:${c.bd}" onclick="openCard(${i},'${gridId}','${panelId}','${headId}','${vibesId}','${sectId}','${placesId}','${btnId}','${sourceId||''}')">
+      ${c.barry?'<div class="verified-dot">✓</div>':''}
       <div class="cc-flag">${c.flag}</div>
       <div class="cc-name" style="color:${c.tx}">${c.name}</div>
       <div class="cc-sub" style="color:${c.tx}">${c.sub}</div>
-    </div>`
-  ).join('');
+    </div>`).join('');
 }
 
-function openCountry(i, gridId, panelId, headId, vibesId, sectId, placesId, btnId, sourceId) {
-  const data = gridId === 'country-grid' ? Object.values(regions).flatMap(r => r.countries).filter((c,_,arr) => {
-    const g = document.getElementById(gridId);
-    return g.children.length === arr.length || true;
-  }) : sportData;
-  const allData = gridId === 'sport-grid' ? sportData : currentCountries;
-  const c = allData[i];
-  if (!c) return;
-  const panel = document.getElementById(panelId);
-  panel.style.background = c.bg.replace('0.12','0.05');
-  panel.style.borderColor = c.bd;
-  document.getElementById(headId).innerHTML = `<div class="cp-flag">${c.flag}</div><div><div class="cp-name" style="color:${c.tx}">${c.name}</div><div class="cp-tagline" style="color:${c.tx}">${c.sub}</div></div><div class="cp-budget" style="background:${c.bg};color:${c.tx};border:0.5px solid ${c.bd}">${c.budget}</div>`;
-  document.getElementById(vibesId).innerHTML = c.vibes.map(v => `<span class="vibe-pill" style="background:${c.bg};color:${c.tx};border:0.5px solid ${c.bd}">${v}</span>`).join('');
-  document.getElementById(sectId).innerHTML = `
+function openCard(i,gridId,panelId,headId,vibesId,sectId,placesId,btnId,sourceId){
+  const data=gridId==='sport-grid'?sportData:currentCountries;
+  const c=data[i];
+  if(!c)return;
+  const panel=document.getElementById(panelId);
+  panel.style.background=c.bg.replace('0.12','0.05');
+  panel.style.borderColor=c.bd;
+  document.getElementById(headId).innerHTML=`<div class="cp-flag">${c.flag}</div><div style="flex:1"><div class="cp-name" style="color:${c.tx}">${c.name}</div><div class="cp-tagline" style="color:${c.tx}">${c.sub}</div></div><div class="cp-budget" style="background:${c.bg};color:${c.tx};border:0.5px solid ${c.bd}">${c.budget}</div>`;
+  document.getElementById(vibesId).innerHTML=c.vibes.map(v=>`<span class="vibe-pill" style="background:${c.bg};color:${c.tx};border:0.5px solid ${c.bd}">${v}</span>`).join('');
+  document.getElementById(sectId).innerHTML=`
     <div class="cp-section" style="background:${c.bg.replace('0.12','0.04')}"><div class="cp-section-label" style="color:${c.tx}">Sport</div><div class="cp-section-text" style="color:${c.tx}">${c.sport}</div></div>
     <div class="cp-section" style="background:${c.bg.replace('0.12','0.04')}"><div class="cp-section-label" style="color:${c.tx}">Culture</div><div class="cp-section-text" style="color:${c.tx}">${c.culture}</div></div>
     <div class="cp-section full" style="background:${c.bg.replace('0.12','0.04')}"><div class="cp-section-label" style="color:${c.tx}">Food & drink</div><div class="cp-section-text" style="color:${c.tx}">${c.food}</div></div>`;
-  document.getElementById(placesId).innerHTML = (c.regions || []).map(r => `<span class="place-chip" onclick="askAboutPlace('${r}','${c.name}')">${r}</span>`).join('');
-  const planBtn = document.getElementById(btnId);
-  planBtn.style.background = c.color;
-  planBtn.textContent = `Plan a trip to ${c.name} →`;
-  planBtn.onclick = () => { document.getElementById('dest').value = c.name; showScreen('planner', document.querySelectorAll('.nav-btn')[1]); };
-  if (sourceId) {
-    const src = document.getElementById(sourceId);
-    if (src) src.textContent = c.barry ? 'Personally visited and verified by our founder — real firsthand knowledge.' : 'AI-compiled from verified travel sources — updated regularly.';
-  }
+  document.getElementById(placesId).innerHTML=(c.regions||[]).map(r=>`<span class="place-chip" onclick="planPlace('${c.name}','${r}')">${r}</span>`).join('');
+  const planBtn=document.getElementById(btnId);
+  planBtn.style.background=c.color;
+  planBtn.textContent=`Plan a trip to ${c.name} →`;
+  planBtn.onclick=()=>{document.getElementById('dest').value=c.name;showScreen('planner',document.querySelectorAll('.nav-btn')[1]);};
+  if(sourceId){const src=document.getElementById(sourceId);if(src)src.textContent=c.barry?'Personally visited and verified by our founder — real firsthand knowledge.':'AI-compiled from verified travel sources — updated regularly.';}
   panel.classList.add('show');
 }
 
-function askAboutPlace(place, country) {
-  alert(`Search for: backpacking ${place} ${country} tips`);
+function planPlace(country,place){
+  document.getElementById('dest').value=`${place}, ${country}`;
+  showScreen('planner',document.querySelectorAll('.nav-btn')[1]);
 }
 
-let currentCountries = [];
-function selectRegion(name, btn) {
-  document.querySelectorAll('.rtab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  const r = regions[name];
-  currentCountries = r.countries;
-  const note = document.getElementById('verified-note');
-  note.classList.toggle('show', r.barry);
-  renderGrid(r.countries, 'country-grid', 'country-panel', 'cp-header', 'cp-vibes', 'cp-sections', 'cp-places', 'cp-plan-btn', 'cp-source');
-  document.getElementById('country-panel').classList.remove('show');
-}
-
-async function generateTrip() {
-  const dest = document.getElementById('dest').value.trim();
-  const dur = document.getElementById('dur').value.trim();
-  const bud = document.getElementById('bud').value.trim();
-  const pass = document.getElementById('pass').value.trim();
-  const extra = document.getElementById('extra').value.trim();
-  const vibes = [...document.querySelectorAll('.style-tag.on')].map(t => t.textContent).join(', ');
-  if (!dest) { document.getElementById('dest').style.borderColor = '#dc2626'; setTimeout(() => document.getElementById('dest').style.borderColor = '', 2000); return; }
-  if (!dur) { document.getElementById('dur').style.borderColor = '#dc2626'; setTimeout(() => document.getElementById('dur').style.borderColor = '', 2000); return; }
-  const btn = document.getElementById('gen-btn');
-  btn.disabled = true;
-  btn.innerHTML = '<div class="dots"><span></span><span></span><span></span></div> Planning your adventure...';
-  const rc = document.getElementById('result-card');
+async function generateTrip(){
+  const dest=document.getElementById('dest').value.trim();
+  const dur=document.getElementById('dur').value.trim();
+  const bud=document.getElementById('bud').value.trim();
+  const pass=document.getElementById('pass').value.trim();
+  const extra=document.getElementById('extra').value.trim();
+  const vibes=[...document.querySelectorAll('.style-tag.on')].map(t=>t.textContent).join(', ');
+  const errBox=document.getElementById('error-box');
+  errBox.style.display='none';
+  if(!dest){document.getElementById('dest').style.borderColor='#dc2626';setTimeout(()=>document.getElementById('dest').style.borderColor='',2000);return;}
+  if(!dur){document.getElementById('dur').style.borderColor='#dc2626';setTimeout(()=>document.getElementById('dur').style.borderColor='',2000);return;}
+  const btn=document.getElementById('gen-btn');
+  btn.disabled=true;
+  btn.innerHTML='<div class="dots"><span></span><span></span><span></span></div> Planning your adventure...';
+  const rc=document.getElementById('result-card');
   rc.classList.add('show');
-  document.getElementById('result-title').textContent = '';
-  document.getElementById('result-tagline').innerHTML = '<div class="dots"><span></span><span></span><span></span></div>';
-  document.getElementById('result-badges').innerHTML = '';
-  document.getElementById('result-days').innerHTML = '';
-  document.getElementById('tip-box').style.display = 'none';
-  document.getElementById('visa-box').style.display = 'none';
-  const prompt = `You are PackdUp's AI trip planner. Built by an Irish backpacker who has visited every continent except Antarctica — heavy experience in Latin America, Asia, Australia, Europe and USA. Give honest, practical, backpacker-level advice. Include sport, culture and food angles where genuinely relevant.
-Trip: ${dest} | ${dur} | Budget: ${bud || 'backpacker budget'} | Passport: ${pass || 'Irish'} | Vibe: ${vibes || 'culture, adventure, food'} | Notes: ${extra || 'none'}
-Respond ONLY with valid JSON, no markdown, no backticks:
+  document.getElementById('result-title').textContent='';
+  document.getElementById('result-tagline').innerHTML='<div class="dots"><span></span><span></span><span></span></div>';
+  document.getElementById('result-badges').innerHTML='';
+  document.getElementById('result-days').innerHTML='';
+  document.getElementById('tip-box').style.display='none';
+  document.getElementById('visa-box').style.display='none';
+
+  const prompt=`You are PackdUp's AI trip planner. Built by an Irish backpacker who has visited every continent except Antarctica — heavy experience in Latin America, Asia, Australia, Europe and USA. Give honest, practical, backpacker-level advice. Include sport, culture and food angles where genuinely relevant.
+Trip: ${dest} | ${dur} | Budget: ${bud||'backpacker budget'} | Passport: ${pass||'Irish'} | Vibe: ${vibes||'culture, adventure, food'} | Notes: ${extra||'none'}
+Respond ONLY with valid JSON, no markdown, no backticks, no extra text before or after:
 {"title":"Short exciting title","tagline":"One punchy sentence","budget_per_day":"Realistic daily estimate","best_time":"Best months to visit","difficulty":"Easy/Moderate/Adventurous","days":[{"title":"Phase label","description":"2-3 practical sentences with real places, honest tips, cultural or sport notes"},{"title":"Phase label","description":"..."},{"title":"Final stretch","description":"..."}],"insider_tip":"One genuine tip most travel blogs miss","visa_note":"Practical visa info for the passport given including any WHV info"}`;
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': ANTHROPIC_KEY, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-client-side-api-key-allowed': 'true', 'Access-Control-Allow-Origin': '*' }
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
+
+  try{
+    const res=await fetch('/api/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})
     });
-    const data = await res.json();
-    const txt = data.content.map(i => i.text || '').join('');
-    const p = JSON.parse(txt.replace(/```json|```/g, '').trim());
-    document.getElementById('result-title').textContent = p.title;
-    document.getElementById('result-tagline').textContent = p.tagline;
-    document.getElementById('result-badges').innerHTML = [p.budget_per_day, p.best_time, p.difficulty].filter(Boolean).map(s => `<span class="badge">${s}</span>`).join('');
-    document.getElementById('result-days').innerHTML = (p.days || []).map(d => `<div class="day-block"><div class="day-title">${d.title}</div><div class="day-desc">${d.description}</div></div>`).join('');
-    if (p.insider_tip) { document.getElementById('tip-text').textContent = p.insider_tip; document.getElementById('tip-box').style.display = 'block'; }
-    if (p.visa_note) { document.getElementById('visa-text').textContent = p.visa_note; document.getElementById('visa-box').style.display = 'block'; }
-  } catch (e) {
-    document.getElementById('result-tagline').textContent = 'Something went wrong — please try again.';
+    if(!res.ok){
+      const errData=await res.json().catch(()=>({}));
+      throw new Error(errData.error||`HTTP ${res.status}`);
+    }
+    const data=await res.json();
+    if(data.error){throw new Error(data.error);}
+    const txt=data.content.map(i=>i.text||'').join('');
+    const p=JSON.parse(txt.replace(/```json|```/g,'').trim());
+    document.getElementById('result-title').textContent=p.title;
+    document.getElementById('result-tagline').textContent=p.tagline;
+    document.getElementById('result-badges').innerHTML=[p.budget_per_day,p.best_time,p.difficulty].filter(Boolean).map(s=>`<span class="badge">${s}</span>`).join('');
+    document.getElementById('result-days').innerHTML=(p.days||[]).map(d=>`<div class="day-block"><div class="day-title">${d.title}</div><div class="day-desc">${d.description}</div></div>`).join('');
+    if(p.insider_tip){document.getElementById('tip-text').textContent=p.insider_tip;document.getElementById('tip-box').style.display='block';}
+    if(p.visa_note){document.getElementById('visa-text').textContent=p.visa_note;document.getElementById('visa-box').style.display='block';}
+    document.getElementById('result-tagline').textContent=p.tagline;
+  }catch(e){
+    document.getElementById('result-tagline').textContent='';
+    errBox.textContent='Something went wrong — please try again. If the problem continues, check your API key in Vercel settings.';
+    errBox.style.display='block';
   }
-  btn.disabled = false;
-  btn.innerHTML = '✨ Generate my trip plan';
+  btn.disabled=false;
+  btn.innerHTML='✨ Generate my trip plan';
 }
 
-function submitFeedback(btn) {
-  btn.textContent = 'Thanks for the feedback! 🙌';
-  btn.style.background = '#0F6E56';
-  btn.disabled = true;
+function submitFeedback(){
+  const btn=document.getElementById('fb-btn');
+  btn.textContent='Thanks for the feedback! 🙌';
+  btn.style.background='#0F6E56';
+  btn.disabled=true;
 }
 
 buildRegionTabs();
-renderGrid(sportData, 'sport-grid', 'sport-panel', 'sp-header', 'sp-vibes', 'sp-sections', 'sp-places', 'sp-plan-btn', null);
-currentCountries = regions['Latin America'].countries;
+renderGrid(sportData,'sport-grid','sport-panel','sp-header','sp-vibes','sp-sections','sp-places','sp-plan-btn',null);
+currentCountries=regions['Latin America'].countries;
 </script>
 </body>
 </html>
