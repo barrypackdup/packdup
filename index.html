@@ -449,7 +449,7 @@ Respond ONLY with valid JSON, no markdown, no backticks, no extra text before or
     const res=await fetch(CF_WORKER,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})
+      body:JSON.stringify({model:'claude-opus-4-5',max_tokens:1000,messages:[{role:'user',content:prompt}]})
     });
     if(!res.ok){
       const errData=await res.json().catch(()=>({}));
