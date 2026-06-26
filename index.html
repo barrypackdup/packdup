@@ -3,487 +3,2679 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PackdUp — AI Backpacker Travel Planner</title>
+<title>PackdUp — The Home of Backpacker Travel</title>
+<meta name="description" content="AI trip planning powered by real experience. 37 countries. Everything you need. Under one roof.">
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&family=Caveat:wght@600&display=swap" rel="stylesheet">
+
+<!-- Mapbox -->
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SWMQWC23BY"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-SWMQWC23BY');
+</script>
+
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
-*{box-sizing:border-box;margin:0;padding:0}
-:root{--green:#1D9E75;--green-dark:#0F6E56;--green-light:rgba(29,158,117,0.12);--bg:#080c10;--bg2:#0d1117;--bg3:#161b22;--border:#1f2937;--text:#e5e7eb;--muted:#6b7280;--dim:#374151}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-nav{background:var(--bg);border-bottom:0.5px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
-.logo{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;letter-spacing:-0.5px}
-.logo span{color:var(--green)}
-.logo small{font-family:'DM Sans',sans-serif;font-size:9px;font-weight:300;color:var(--dim);letter-spacing:2px;text-transform:uppercase;display:block;margin-top:-3px}
-.nav-links{display:flex;gap:4px}
-.nav-btn{background:transparent;border:0.5px solid transparent;padding:7px 14px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;transition:all 0.2s}
-.nav-btn:hover{color:var(--text);background:var(--bg3)}
-.nav-btn.active{color:var(--green);border-color:rgba(29,158,117,0.4);background:var(--green-light)}
-.screen{display:none}.screen.active{display:block}
-.hero{padding:60px 24px 40px;text-align:center;border-bottom:0.5px solid var(--border);max-width:700px;margin:0 auto}
-.eyebrow{font-size:11px;font-weight:500;color:var(--green);text-transform:uppercase;letter-spacing:2.5px;margin-bottom:14px}
-.hero h1{font-family:'Playfair Display',serif;font-size:42px;font-weight:700;line-height:1.15;margin-bottom:14px}
-.hero h1 em{font-style:italic;color:var(--green)}
-.hero p{font-size:16px;color:var(--muted);line-height:1.7;max-width:480px;margin:0 auto 28px}
-.hero-stats{display:flex;justify-content:center;gap:40px;margin-bottom:32px}
-.stat-num{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--green)}
-.stat-label{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-top:2px}
-.hero-cta{background:var(--green);color:#fff;border:none;padding:14px 32px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:background 0.2s}
-.hero-cta:hover{background:var(--green-dark)}
-.planner-wrap{max-width:680px;margin:0 auto;padding:32px 24px}
-.section-label{font-size:11px;font-weight:500;color:var(--dim);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px}
-.form-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.form-group{display:flex;flex-direction:column;gap:5px}
-.form-label{font-size:10px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px}
-.form-group input,.form-group textarea{background:var(--bg);border:0.5px solid var(--border);border-radius:8px;padding:10px 13px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;transition:border-color 0.2s;width:100%}
-.form-group input:focus,.form-group textarea:focus{border-color:var(--green)}
-.form-group textarea{resize:none;height:72px}
-.style-tags{display:flex;flex-wrap:wrap;gap:7px}
-.style-tag{padding:6px 12px;border-radius:20px;font-size:12px;font-weight:500;background:var(--bg);border:0.5px solid var(--border);cursor:pointer;color:var(--muted);transition:all 0.2s}
-.style-tag.on{background:var(--green-light);border-color:var(--green);color:#5DCAA5}
-.gen-btn{background:var(--green);color:#fff;border:none;padding:13px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background 0.2s;width:100%}
-.gen-btn:hover{background:var(--green-dark)}
-.gen-btn:disabled{background:var(--bg3);color:var(--dim);cursor:not-allowed}
-.result-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:14px;padding:20px;margin-top:16px;display:none}
-.result-card.show{display:block}
-.result-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-bottom:4px}
-.result-tagline{font-size:13px;color:var(--muted);font-style:italic;margin-bottom:14px}
-.result-badges{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}
-.badge{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:500;background:var(--green-light);border:0.5px solid rgba(29,158,117,0.4);color:#5DCAA5}
-.day-block{border-left:2px solid var(--green);padding:10px 14px;margin-bottom:10px;background:rgba(29,158,117,0.05);border-radius:0 8px 8px 0}
-.day-title{font-size:13px;font-weight:500;color:#5DCAA5;margin-bottom:4px}
-.day-desc{font-size:13px;color:var(--muted);line-height:1.65}
-.tip-box{margin-top:14px;padding:13px 15px;background:rgba(29,158,117,0.08);border-radius:8px;border-left:3px solid var(--green);border-top-left-radius:0;border-bottom-left-radius:0}
-.tip-label{font-size:10px;font-weight:500;color:var(--green);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
-.tip-text{font-size:13px;color:#9FE1CB;line-height:1.6}
-.visa-box{margin-top:10px;padding:12px 14px;background:var(--bg);border-radius:8px;border:0.5px solid var(--border)}
-.visa-label{font-size:10px;font-weight:500;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
-.visa-text{font-size:13px;color:var(--muted);line-height:1.6}
-.error-box{margin-top:10px;padding:12px 14px;background:rgba(220,38,38,0.1);border-radius:8px;border:0.5px solid rgba(220,38,38,0.3);color:#fca5a5;font-size:13px;display:none}
-.dots{display:inline-flex;gap:4px;align-items:center}
-.dots span{width:6px;height:6px;border-radius:50%;background:var(--green);animation:bop 1.2s infinite}
-.dots span:nth-child(2){animation-delay:.2s}
-.dots span:nth-child(3){animation-delay:.4s}
-@keyframes bop{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
-.explore-wrap{max-width:900px;margin:0 auto;padding:32px 24px}
-.region-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
-.rtab{padding:7px 15px;border-radius:20px;font-size:12px;font-weight:500;background:var(--bg2);border:0.5px solid var(--border);cursor:pointer;color:var(--muted);transition:all 0.2s}
-.rtab:hover{color:var(--text)}
-.rtab.active{color:#fff;background:var(--bg3);border-color:rgba(255,255,255,0.2)}
-.rtab.barry{border-color:rgba(29,158,117,0.4);color:#5DCAA5}
-.rtab.barry.active{background:rgba(29,158,117,0.15);border-color:var(--green);color:#fff}
-.verified-note{display:none;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:500;background:var(--green-light);border:0.5px solid rgba(29,158,117,0.4);color:#5DCAA5;margin-bottom:14px;width:fit-content}
-.verified-note.show{display:flex}
-.country-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:16px}
-.country-card{border-radius:12px;padding:14px 10px;cursor:pointer;transition:all 0.2s;text-align:center;border:0.5px solid transparent;position:relative}
-.country-card:hover{transform:translateY(-2px)}
-.verified-dot{position:absolute;top:6px;right:6px;width:16px;height:16px;border-radius:50%;background:var(--green);font-size:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
-.cc-flag{font-size:24px;margin-bottom:6px}
-.cc-name{font-size:12px;font-weight:500}
-.cc-sub{font-size:10px;margin-top:2px;opacity:0.65}
-.country-panel{border-radius:14px;border:0.5px solid var(--border);overflow:hidden;display:none;margin-bottom:24px}
-.country-panel.show{display:block}
-.cp-header{padding:18px 20px 14px;display:flex;align-items:center;gap:14px}
-.cp-flag{font-size:32px}
-.cp-name{font-size:18px;font-weight:500}
-.cp-tagline{font-size:12px;opacity:0.65;margin-top:3px}
-.cp-budget{font-size:12px;font-weight:500;padding:4px 12px;border-radius:20px;margin-left:auto}
-.vibe-row{display:flex;gap:7px;flex-wrap:wrap;padding:0 20px 14px}
-.vibe-pill{padding:4px 11px;border-radius:20px;font-size:11px;font-weight:500}
-.cp-sections{display:grid;grid-template-columns:1fr 1fr;border-top:0.5px solid rgba(255,255,255,0.07)}
-.cp-section{padding:14px 16px;border-right:0.5px solid rgba(255,255,255,0.07)}
-.cp-section:last-child,.cp-section.full{border-right:none}
-.cp-section.full{grid-column:1/-1}
-.cp-section-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;opacity:0.45}
-.cp-section-text{font-size:12px;line-height:1.65;opacity:0.82}
-.cp-places{display:flex;flex-wrap:wrap;gap:7px;padding:14px 20px;border-top:0.5px solid rgba(255,255,255,0.07)}
-.place-chip{padding:6px 13px;border-radius:20px;font-size:12px;cursor:pointer;transition:all 0.2s;border:0.5px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.8)}
-.place-chip:hover{background:rgba(255,255,255,0.14)}
-.cp-plan-btn{width:100%;padding:12px;border:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;color:#fff;transition:opacity 0.2s}
-.cp-plan-btn:hover{opacity:0.85}
-.cp-source{font-size:10px;color:var(--dim);padding:8px 20px;border-top:0.5px solid var(--border);font-style:italic}
-.sport-wrap{max-width:900px;margin:0 auto;padding:32px 24px}
-.sport-hero{text-align:center;margin-bottom:32px}
-.sport-hero h2{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;margin-bottom:8px}
-.sport-hero p{font-size:14px;color:var(--muted);max-width:480px;margin:0 auto}
-.about-wrap{max-width:680px;margin:0 auto;padding:48px 24px}
-.about-wrap h2{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;margin-bottom:20px}
-.about-wrap p{font-size:15px;color:var(--muted);line-height:1.8;margin-bottom:16px}
-.about-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:28px 0}
-.about-stat{background:var(--bg2);border:0.5px solid var(--border);border-radius:12px;padding:16px;text-align:center}
-.about-stat-num{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--green)}
-.about-stat-label{font-size:11px;color:var(--muted);margin-top:4px}
-.feedback-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:14px;padding:24px;margin-top:32px}
-.feedback-card h3{font-size:16px;font-weight:500;margin-bottom:8px}
-.feedback-card p{font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6}
-.feedback-form{display:flex;flex-direction:column;gap:10px}
-.feedback-form input,.feedback-form textarea,.feedback-form select{background:var(--bg);border:0.5px solid var(--border);border-radius:8px;padding:10px 13px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;width:100%}
-.feedback-form textarea{resize:none;height:90px}
-.feedback-form select option{background:var(--bg2)}
-.feedback-btn{background:var(--green);color:#fff;border:none;padding:11px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;width:100%;transition:background 0.2s}
-.feedback-btn:hover{background:var(--green-dark)}
-footer{border-top:0.5px solid var(--border);padding:24px;text-align:center;margin-top:48px}
-footer p{font-size:12px;color:var(--dim)}
-@media(max-width:600px){
-  .hero h1{font-size:28px}
-  .form-row{grid-template-columns:1fr}
-  .cp-sections{grid-template-columns:1fr}
-  .cp-section{border-right:none;border-bottom:0.5px solid rgba(255,255,255,0.07)}
-  .about-stats{grid-template-columns:1fr}
-  nav{padding:10px 14px}
-  .nav-btn{padding:6px 9px;font-size:11px}
+/* ============================================
+   PACKDUP 2.0 — LIGHT EDITORIAL THEME
+   ============================================ */
+
+:root {
+  --bg: #FAFAF8;
+  --surface: #FFFFFF;
+  --green: #1D9E75;
+  --green-light: #E8F5F0;
+  --green-dark: #156B50;
+  --amber: #E8B86D;
+  --amber-light: #FDF3E3;
+  --text: #1C2B2B;
+  --text-2: #4A6060;
+  --text-3: #7A9090;
+  --border: #E4EDE8;
+  --shadow: 0 2px 12px rgba(28,43,43,0.08);
+  --shadow-lg: 0 8px 32px rgba(28,43,43,0.12);
+  --radius: 12px;
+  --radius-lg: 20px;
 }
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ============ NAVBAR ============ */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(250,250,248,0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+}
+
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+
+.nav-logo img { height: 36px; }
+
+.nav-links {
+  display: flex;
+  gap: 8px;
+  list-style: none;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--text-2);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 14px;
+  border-radius: 8px;
+  transition: all 0.2s;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.nav-links a:hover, .nav-links a.active {
+  color: var(--green);
+  background: var(--green-light);
+}
+
+.nav-cta {
+  background: var(--green);
+  color: white !important;
+  border-radius: 8px;
+}
+
+.nav-cta:hover {
+  background: var(--green-dark) !important;
+  color: white !important;
+}
+
+/* ============ HERO ============ */
+.hero {
+  position: relative;
+  height: 90vh;
+  min-height: 600px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=1800&q=80&auto=format');
+  background-size: cover;
+  background-position: center;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(28,43,43,0.75) 0%,
+    rgba(29,158,117,0.3) 60%,
+    rgba(28,43,43,0.5) 100%
+  );
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  width: 100%;
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 100px;
+  padding: 6px 16px;
+  color: white;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 24px;
+  font-family: 'Space Grotesk', sans-serif;
+  letter-spacing: 0.5px;
+}
+
+.hero-eyebrow span { color: #7EECC4; }
+
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(42px, 6vw, 80px);
+  font-weight: 900;
+  color: white;
+  line-height: 1.05;
+  margin-bottom: 20px;
+  max-width: 700px;
+}
+
+.hero-title em {
+  font-style: italic;
+  color: #7EECC4;
+}
+
+.hero-subtitle {
+  color: rgba(255,255,255,0.85);
+  font-size: 18px;
+  font-weight: 300;
+  max-width: 500px;
+  margin-bottom: 36px;
+  line-height: 1.6;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  background: var(--green);
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Space Grotesk', sans-serif;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.btn-primary:hover { background: var(--green-dark); transform: translateY(-1px); }
+
+.btn-secondary {
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(8px);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.4);
+  padding: 14px 28px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: 'Space Grotesk', sans-serif;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.btn-secondary:hover { background: rgba(255,255,255,0.25); }
+
+/* Scroll indicator */
+.scroll-indicator {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255,255,255,0.6);
+  font-size: 12px;
+  font-family: 'Space Grotesk', sans-serif;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  animation: bounce 2s infinite;
+}
+
+.scroll-indicator::after {
+  content: '';
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.6), transparent);
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-6px); }
+}
+
+/* ============ STATS STRIP ============ */
+.stats-strip {
+  background: var(--green);
+  padding: 16px 24px;
+  overflow: hidden;
+}
+
+.stats-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
+}
+
+.stat-number {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #7EECC4;
+}
+
+.stat-label {
+  font-size: 13px;
+  font-family: 'Space Grotesk', sans-serif;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+/* ============ SECTION BASICS ============ */
+.section {
+  padding: 80px 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-eyebrow {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 12px;
+}
+
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+
+.section-subtitle {
+  color: var(--text-2);
+  font-size: 17px;
+  font-weight: 300;
+  max-width: 560px;
+  line-height: 1.6;
+}
+
+/* ============ MAP SECTION ============ */
+.map-section {
+  padding: 80px 0;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.map-header {
+  max-width: 1200px;
+  margin: 0 auto 32px;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.map-legend {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-family: 'Space Grotesk', sans-serif;
+  color: var(--text-2);
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+#packdup-map {
+  width: 100%;
+  height: 480px;
+  cursor: pointer;
+}
+
+.map-popup {
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* ============ TRIP PLANNER ============ */
+.planner-section {
+  background: linear-gradient(135deg, var(--text) 0%, #2A4040 100%);
+  padding: 80px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.planner-section::before {
+  content: '';
+  position: absolute;
+  top: -100px;
+  right: -100px;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(29,158,117,0.2) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.planner-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.planner-inner .section-title { color: white; }
+.planner-inner .section-subtitle { color: rgba(255,255,255,0.7); margin: 0 auto 40px; }
+
+.planner-card {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  box-shadow: var(--shadow-lg);
+}
+
+.planner-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.form-group { text-align: left; }
+
+.form-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
+  margin-bottom: 6px;
+  font-family: 'Space Grotesk', sans-serif;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.form-input, .form-select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  transition: border-color 0.2s;
+  outline: none;
+}
+
+.form-input:focus, .form-select:focus {
+  border-color: var(--green);
+  background: white;
+}
+
+.form-textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  resize: vertical;
+  min-height: 80px;
+  outline: none;
+  transition: border-color 0.2s;
+  margin-bottom: 16px;
+}
+
+.form-textarea:focus { border-color: var(--green); background: white; }
+
+.generate-btn {
+  width: 100%;
+  background: var(--green);
+  color: white;
+  border: none;
+  padding: 16px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Space Grotesk', sans-serif;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.generate-btn:hover { background: var(--green-dark); transform: translateY(-1px); }
+.generate-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+
+/* Result */
+.result-card {
+  margin-top: 24px;
+  background: var(--bg);
+  border-radius: var(--radius);
+  border: 1.5px solid var(--border);
+  overflow: hidden;
+  display: none;
+}
+
+.result-header {
+  background: var(--green);
+  color: white;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.result-flag { font-size: 32px; }
+
+.result-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.result-body {
+  padding: 24px;
+  white-space: pre-wrap;
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--text);
+}
+
+.result-actions {
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.result-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: 'Space Grotesk', sans-serif;
+  border: 1.5px solid var(--border);
+  background: white;
+  color: var(--text);
+  transition: all 0.2s;
+}
+
+.result-btn:hover { border-color: var(--green); color: var(--green); }
+
+.affiliate-strip {
+  padding: 16px 24px;
+  background: var(--amber-light);
+  border-top: 1px solid #F0D9A8;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.affiliate-strip span {
+  font-size: 12px;
+  font-family: 'Space Grotesk', sans-serif;
+  color: var(--text-2);
+  font-weight: 500;
+}
+
+.affiliate-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: white;
+  border: 1px solid #E0C990;
+  border-radius: 100px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+  font-family: 'Space Grotesk', sans-serif;
+  transition: all 0.2s;
+}
+
+.affiliate-link:hover { border-color: var(--green); color: var(--green); }
+
+/* Loading */
+.loading {
+  display: none;
+  text-align: center;
+  padding: 40px;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border);
+  border-top-color: var(--green);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 16px;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ============ ROUTES SECTION ============ */
+.routes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 24px;
+  margin-top: 40px;
+}
+
+.route-card {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all 0.3s;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.route-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.route-photo {
+  height: 200px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.route-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(28,43,43,0.8) 0%, transparent 60%);
+}
+
+.route-flags {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  display: flex;
+  gap: 4px;
+}
+
+.route-flag { font-size: 20px; }
+
+.route-body { padding: 20px; }
+
+.route-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.route-desc {
+  color: var(--text-2);
+  font-size: 13px;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.route-meta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.route-tag {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-family: 'Space Grotesk', sans-serif;
+  color: var(--text-2);
+  font-weight: 500;
+}
+
+/* ============ TOOLS SECTION ============ */
+.tools-bg {
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 80px 24px;
+}
+
+.tools-grid {
+  max-width: 1200px;
+  margin: 40px auto 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.tool-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.tool-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--green);
+  transform: scaleX(0);
+  transition: transform 0.2s;
+}
+
+.tool-card:hover {
+  border-color: var(--green);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.tool-card:hover::before { transform: scaleX(1); }
+
+.tool-icon {
+  width: 48px;
+  height: 48px;
+  background: var(--green-light);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-bottom: 16px;
+}
+
+.tool-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.tool-desc {
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.5;
+}
+
+.tool-badge {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 3px 10px;
+  background: var(--green-light);
+  color: var(--green);
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+/* ============ COUNTRIES GRID ============ */
+.countries-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.country-card {
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: var(--shadow);
+  position: relative;
+  height: 160px;
+  background: var(--surface);
+}
+
+.country-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+
+.country-photo {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+.country-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(28,43,43,0.85) 0%, transparent 60%);
+}
+
+.country-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 12px;
+}
+
+.country-flag { font-size: 20px; display: block; margin-bottom: 2px; }
+
+.country-name {
+  color: white;
+  font-weight: 600;
+  font-size: 13px;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.country-budget {
+  color: rgba(255,255,255,0.75);
+  font-size: 11px;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.tier-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid white;
+}
+
+.tier-verified { background: var(--green); }
+.tier-researched { background: #4A90D9; }
+.tier-ai { background: #9B9B9B; }
+
+/* ============ BLOG SECTION ============ */
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+  margin-top: 40px;
+}
+
+.blog-card {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.blog-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+
+.blog-photo {
+  height: 220px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.blog-category {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: var(--green);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: 'Space Grotesk', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.blog-body { padding: 24px; }
+
+.blog-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+
+.blog-excerpt {
+  color: var(--text-2);
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.blog-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.blog-flag { font-size: 18px; }
+
+.blog-read-time {
+  font-size: 12px;
+  color: var(--text-3);
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+/* ============ ABOUT / BARRY SECTION ============ */
+.about-section {
+  background: linear-gradient(135deg, #F0F7F4 0%, var(--surface) 100%);
+  border-top: 1px solid var(--border);
+  padding: 80px 24px;
+}
+
+.about-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.about-photo-wrap {
+  position: relative;
+}
+
+.about-photo {
+  width: 100%;
+  aspect-ratio: 3/4;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.about-badge {
+  position: absolute;
+  bottom: -16px;
+  right: -16px;
+  background: var(--green);
+  color: white;
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  box-shadow: var(--shadow);
+}
+
+.about-badge-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 32px;
+  font-weight: 700;
+  display: block;
+}
+
+.about-badge-label {
+  font-size: 12px;
+  font-family: 'Space Grotesk', sans-serif;
+  opacity: 0.9;
+}
+
+.about-content .section-title { margin-bottom: 20px; }
+
+.about-text {
+  color: var(--text-2);
+  font-size: 16px;
+  line-height: 1.8;
+  margin-bottom: 20px;
+}
+
+.about-quote {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 20px;
+  color: var(--green-dark);
+  border-left: 3px solid var(--green);
+  padding-left: 20px;
+  margin: 24px 0;
+  line-height: 1.5;
+}
+
+.about-stats {
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.about-stat-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--green);
+}
+
+.about-stat-label {
+  font-size: 13px;
+  color: var(--text-2);
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+/* ============ EXPLORE SECTION ============ */
+.region-filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 32px 0 24px;
+}
+
+.region-btn {
+  padding: 8px 18px;
+  border-radius: 100px;
+  border: 1.5px solid var(--border);
+  background: white;
+  color: var(--text-2);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: 'Space Grotesk', sans-serif;
+  transition: all 0.2s;
+}
+
+.region-btn.active, .region-btn:hover {
+  background: var(--green);
+  color: white;
+  border-color: var(--green);
+}
+
+/* ============ EMAIL SIGNUP ============ */
+.email-section {
+  background: var(--text);
+  padding: 80px 24px;
+  text-align: center;
+}
+
+.email-inner {
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.email-inner .section-title { color: white; }
+.email-inner .section-subtitle { color: rgba(255,255,255,0.65); margin: 0 auto 32px; }
+
+.email-form {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.email-input {
+  flex: 1;
+  min-width: 240px;
+  padding: 14px 18px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.08);
+  color: white;
+  font-size: 15px;
+  font-family: 'DM Sans', sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.email-input::placeholder { color: rgba(255,255,255,0.4); }
+.email-input:focus { border-color: var(--green); }
+
+.email-btn {
+  background: var(--green);
+  color: white;
+  border: none;
+  padding: 14px 24px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Space Grotesk', sans-serif;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.email-btn:hover { background: var(--green-dark); }
+
+.email-note {
+  margin-top: 16px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.4);
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+/* ============ FOOTER ============ */
+footer {
+  background: #111B1B;
+  color: rgba(255,255,255,0.6);
+  padding: 48px 24px 24px;
+}
+
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-top {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.footer-brand img { height: 32px; margin-bottom: 16px; }
+
+.footer-brand p {
+  font-size: 13px;
+  line-height: 1.6;
+  max-width: 260px;
+}
+
+.footer-col h4 {
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'Space Grotesk', sans-serif;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.footer-col a {
+  display: block;
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  font-size: 13px;
+  margin-bottom: 8px;
+  transition: color 0.2s;
+}
+
+.footer-col a:hover { color: var(--green); }
+
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 12px;
+}
+
+.footer-bottom a {
+  color: rgba(255,255,255,0.4);
+  text-decoration: none;
+}
+
+.footer-bottom a:hover { color: var(--green); }
+
+/* ============ NAVIGATION TABS ============ */
+.main-nav {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  position: sticky;
+  top: 64px;
+  z-index: 900;
+}
+
+.main-nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  gap: 4px;
+}
+
+.nav-tab {
+  padding: 14px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-2);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  font-family: 'Space Grotesk', sans-serif;
+  white-space: nowrap;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}
+
+.nav-tab:hover { color: var(--green); }
+.nav-tab.active { color: var(--green); border-bottom-color: var(--green); }
+
+/* Screen visibility */
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* ============ CONTENT TIER LEGEND ============ */
+.tier-legend {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.tier-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-family: 'Space Grotesk', sans-serif;
+  color: var(--text-2);
+}
+
+.tier-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+/* ============ PACKDUP TIP BOX ============ */
+.tip-box {
+  background: var(--green-light);
+  border-left: 4px solid var(--green);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 16px 20px;
+  margin: 20px 0;
+}
+
+.tip-header {
+  font-family: 'Caveat', cursive;
+  font-size: 18px;
+  color: var(--green-dark);
+  margin-bottom: 6px;
+}
+
+.tip-text {
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.6;
+}
+
+/* ============ COUNTRY PANEL ============ */
+.country-panel {
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 400px;
+  background: var(--surface);
+  box-shadow: -8px 0 32px rgba(0,0,0,0.15);
+  z-index: 2000;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  overflow-y: auto;
+}
+
+.country-panel.open { transform: translateX(0); }
+
+.panel-photo {
+  height: 220px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.panel-photo-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%);
+}
+
+.panel-flag-name {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  color: white;
+}
+
+.panel-flag { font-size: 28px; display: block; }
+
+.panel-country-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.panel-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  background: rgba(0,0,0,0.4);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.panel-body { padding: 24px; }
+
+.panel-facts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.panel-fact {
+  background: var(--bg);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.panel-fact-label {
+  font-size: 11px;
+  color: var(--text-3);
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.panel-fact-value {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.panel-verdict {
+  background: var(--green-light);
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.panel-verdict-label {
+  font-family: 'Caveat', cursive;
+  font-size: 16px;
+  color: var(--green-dark);
+  margin-bottom: 6px;
+}
+
+.panel-verdict-text {
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.5;
+}
+
+.panel-cta {
+  width: 100%;
+  background: var(--green);
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Space Grotesk', sans-serif;
+  transition: background 0.2s;
+}
+
+.panel-cta:hover { background: var(--green-dark); }
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 768px) {
+  .footer-top { grid-template-columns: 1fr 1fr; }
+  .about-inner { grid-template-columns: 1fr; }
+  .about-photo { max-height: 300px; }
+  .about-badge { display: none; }
+  .nav-links { display: none; }
+  .country-panel { width: 100%; }
+  .hero-title { font-size: 36px; }
+  .footer-top { grid-template-columns: 1fr; }
+}
+
+/* ============ UTILITY ============ */
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 0;
+}
+
+.text-center { text-align: center; }
+.text-green { color: var(--green); }
+.mt-8 { margin-top: 8px; }
+.mt-16 { margin-top: 16px; }
+.mt-24 { margin-top: 24px; }
+.mt-40 { margin-top: 40px; }
+
 </style>
 </head>
 <body>
 
-<nav>
-  <div class="logo">Packd<span>Up</span><small>plan. explore. experience.</small></div>
-  <div class="nav-links">
-    <button class="nav-btn active" onclick="showScreen('home',this)">Home</button>
-    <button class="nav-btn" onclick="showScreen('planner',this)">Plan trip</button>
-    <button class="nav-btn" onclick="showScreen('explore',this)">Explore</button>
-    <button class="nav-btn" onclick="showScreen('sport',this)">Sport & culture</button>
-    <button class="nav-btn" onclick="showScreen('about',this)">About</button>
+<!-- ============ NAVBAR ============ -->
+<nav class="navbar">
+  <div class="nav-inner">
+    <a class="nav-logo" href="#home" onclick="showScreen('home')">
+      <img src="PackdUp_Horizontal_Logo.png" alt="PackdUp">
+    </a>
+    <ul class="nav-links">
+      <li><a href="#" onclick="showScreen('home')" class="active" id="nav-home">Home</a></li>
+      <li><a href="#" onclick="showScreen('plan')" id="nav-plan">Plan</a></li>
+      <li><a href="#" onclick="showScreen('explore')" id="nav-explore">Explore</a></li>
+      <li><a href="#" onclick="showScreen('routes')" id="nav-routes">Routes</a></li>
+      <li><a href="#" onclick="showScreen('tools')" id="nav-tools">Tools</a></li>
+      <li><a href="#" onclick="showScreen('blog')" id="nav-blog">Blog</a></li>
+      <li><a href="#" onclick="showScreen('about')" id="nav-about">About</a></li>
+      <li><a href="#" onclick="showScreen('plan')" class="nav-cta">Plan my trip →</a></li>
+    </ul>
   </div>
 </nav>
 
-<!-- HOME -->
-<div class="screen active" id="screen-home">
-  <div style="max-width:700px;margin:0 auto;padding:0 24px">
-    <div class="hero">
-      <div class="eyebrow">AI-powered by real experience</div>
-      <h1>Your <em>perfect</em> backpacker trip,<br>planned in seconds</h1>
-      <p>Every country on earth. Real backpacker knowledge. Sport, culture, food and the details no guidebook ever covers.</p>
-      <div class="hero-stats">
-        <div><div class="stat-num">195</div><div class="stat-label">Countries covered</div></div>
-        <div><div class="stat-num">6</div><div class="stat-label">Continents explored</div></div>
-        <div><div class="stat-num">100%</div><div class="stat-label">Real advice</div></div>
+<!-- ============ HOME SCREEN ============ -->
+<div id="screen-home" class="screen active">
+
+  <!-- Hero -->
+  <section class="hero" id="home">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        🌍 <span>37 countries verified</span> — The home of backpacker travel
       </div>
-      <button class="hero-cta" onclick="showScreen('planner',document.querySelectorAll('.nav-btn')[1])">Plan my trip now</button>
+      <h1 class="hero-title">
+        Draw your trip.<br>
+        <em>We plan the rest.</em>
+      </h1>
+      <p class="hero-subtitle">
+        AI trip planning powered by real firsthand experience across 6 continents. Not generated from thin air — built from 300+ days on the road.
+      </p>
+      <div class="hero-actions">
+        <button class="btn-primary" onclick="showScreen('plan')">
+          🗺️ Plan my trip — free
+        </button>
+        <button class="btn-secondary" onclick="showScreen('explore')">
+          🌍 Explore destinations
+        </button>
+      </div>
     </div>
-    <div style="padding:32px 0">
-      <div class="section-label" style="text-align:center;margin-bottom:24px">Why PackdUp is different</div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px">
-        <div style="background:var(--bg2);border:0.5px solid var(--border);border-radius:14px;padding:20px">
-          <div style="font-size:24px;margin-bottom:10px">🌍</div>
-          <div style="font-size:14px;font-weight:500;margin-bottom:6px">Every country</div>
-          <div style="font-size:12px;color:var(--muted);line-height:1.6">195 countries covered with real backpacker-level detail — not tourist brochure content.</div>
+    <div class="scroll-indicator">scroll</div>
+  </section>
+
+  <!-- Stats -->
+  <div class="stats-strip">
+    <div class="stats-inner">
+      <div class="stat-item">
+        <span class="stat-number">195</span>
+        <span class="stat-label">countries covered</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">37</span>
+        <span class="stat-label">PackdUp verified</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">6</span>
+        <span class="stat-label">continents</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">300+</span>
+        <span class="stat-label">days on the road</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">Free</span>
+        <span class="stat-label">always</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Map Section -->
+  <div class="map-section">
+    <div class="map-header">
+      <div>
+        <div class="section-eyebrow">Explore the world</div>
+        <h2 class="section-title" style="margin-bottom:0">Click any country to explore</h2>
+      </div>
+      <div class="map-legend">
+        <div class="legend-item">
+          <div class="legend-dot" style="background:#1D9E75"></div>
+          PackdUp Verified
         </div>
-        <div style="background:var(--bg2);border:0.5px solid var(--border);border-radius:14px;padding:20px">
-          <div style="font-size:24px;margin-bottom:10px">⚽</div>
-          <div style="font-size:14px;font-weight:500;margin-bottom:6px">Sport & culture</div>
-          <div style="font-size:12px;color:var(--muted);line-height:1.6">Find live matches, local derbies, GAA clubs abroad and cultural experiences most apps ignore.</div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:#4A90D9"></div>
+          PackdUp Researched
         </div>
-        <div style="background:var(--bg2);border:0.5px solid var(--border);border-radius:14px;padding:20px">
-          <div style="font-size:24px;margin-bottom:10px">🤖</div>
-          <div style="font-size:14px;font-weight:500;margin-bottom:6px">AI trip planner</div>
-          <div style="font-size:12px;color:var(--muted);line-height:1.6">Enter your budget, time and vibe — get a full personalised itinerary in seconds.</div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:#C8D4CC"></div>
+          All countries
         </div>
-        <div style="background:var(--bg2);border:0.5px solid var(--border);border-radius:14px;padding:20px">
-          <div style="font-size:24px;margin-bottom:10px">💰</div>
-          <div style="font-size:14px;font-weight:500;margin-bottom:6px">Real budgets</div>
-          <div style="font-size:12px;color:var(--muted);line-height:1.6">Honest daily cost estimates from someone who has actually lived on a backpacker budget.</div>
+      </div>
+    </div>
+    <div id="packdup-map"></div>
+  </div>
+
+  <!-- Tools Strip -->
+  <div class="tools-bg">
+    <div style="max-width:1200px;margin:0 auto;padding:0 24px">
+      <div class="section-eyebrow">Free tools</div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px">
+        <h2 class="section-title">Everything you need to plan your trip</h2>
+        <button class="btn-primary" onclick="showScreen('tools')" style="margin-bottom:4px">View all tools →</button>
+      </div>
+    </div>
+    <div class="tools-grid">
+      <div class="tool-card" onclick="showScreen('plan')">
+        <div class="tool-icon">🗺️</div>
+        <div class="tool-name">AI Trip Planner</div>
+        <div class="tool-desc">Get a complete personalised itinerary in seconds. Built on real experience.</div>
+        <span class="tool-badge">Most popular</span>
+      </div>
+      <div class="tool-card" onclick="showScreen('plan')">
+        <div class="tool-icon">✏️</div>
+        <div class="tool-name">Build Your Route</div>
+        <div class="tool-desc">Click destinations on a map. We build the itinerary around your route.</div>
+        <span class="tool-badge">New</span>
+      </div>
+      <div class="tool-card" onclick="showScreen('tools')">
+        <div class="tool-icon">💰</div>
+        <div class="tool-name">Budget Calculator</div>
+        <div class="tool-desc">Real daily costs from verified firsthand spending data.</div>
+      </div>
+      <div class="tool-card" onclick="showScreen('tools')">
+        <div class="tool-icon">🛂</div>
+        <div class="tool-name">Visa Checker</div>
+        <div class="tool-desc">Instant visa requirements by passport and destination.</div>
+      </div>
+      <div class="tool-card" onclick="showScreen('tools')">
+        <div class="tool-icon">🎒</div>
+        <div class="tool-name">Packing List</div>
+        <div class="tool-desc">Custom packing lists by destination, duration and activities.</div>
+      </div>
+      <div class="tool-card" onclick="showScreen('tools')">
+        <div class="tool-icon">⛅</div>
+        <div class="tool-name">Weather Window</div>
+        <div class="tool-desc">Find the best time to visit anywhere in the world.</div>
+      </div>
+      <div class="tool-card" onclick="showScreen('tools')">
+        <div class="tool-icon">☘️</div>
+        <div class="tool-name">GAA Clubs Worldwide</div>
+        <div class="tool-desc">Find your local GAA club in any city in the world.</div>
+        <span class="tool-badge">Irish exclusive</span>
+      </div>
+      <div class="tool-card" onclick="showScreen('tools')">
+        <div class="tool-icon">🔄</div>
+        <div class="tool-name">Trip Comparison</div>
+        <div class="tool-desc">Colombia vs Peru? Side by side comparison of any two destinations.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Routes -->
+  <section class="section">
+    <div class="section-eyebrow">Backpacker routes</div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;margin-bottom:0">
+      <h2 class="section-title">The great backpacker routes</h2>
+      <button class="btn-primary" onclick="showScreen('routes')" style="margin-bottom:4px">All routes →</button>
+    </div>
+    <div class="routes-grid" id="home-routes"></div>
+  </section>
+
+  <!-- Blog -->
+  <div style="background:var(--surface);border-top:1px solid var(--border);padding:80px 24px">
+    <div style="max-width:1200px;margin:0 auto">
+      <div class="section-eyebrow">From the road</div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;margin-bottom:40px">
+        <h2 class="section-title">Real stories. Real experience.</h2>
+        <button class="btn-primary" onclick="showScreen('blog')">All posts →</button>
+      </div>
+      <div class="blog-grid" id="home-blog"></div>
+    </div>
+  </div>
+
+  <!-- About teaser -->
+  <div class="about-section">
+    <div class="about-inner">
+      <div class="about-photo-wrap">
+        <img class="about-photo" src="barry-photo.jpg" alt="Barry Motherway — EBC Trek, Nepal 2026">
+        <div class="about-badge">
+          <span class="about-badge-num">37</span>
+          <span class="about-badge-label">countries</span>
         </div>
+      </div>
+      <div class="about-content">
+        <div class="section-eyebrow">Built on real experience</div>
+        <h2 class="section-title">Not generated from thin air</h2>
+        <div class="about-quote">
+          "Every recommendation on PackdUp comes from someone who actually went there, slept there, ate there and made the mistakes so you don't have to."
+        </div>
+        <p class="about-text">
+          PackdUp is built on 300+ days of firsthand travel across 37 countries and 6 continents — documented in real time on Polarsteps with 174,881 words of original travel writing.
+        </p>
+        <p class="about-text">
+          Every hostel pick, every budget breakdown, every honest warning — PackdUp Verified means someone was actually there.
+        </p>
+        <div class="about-stats">
+          <div>
+            <div class="about-stat-num">37</div>
+            <div class="about-stat-label">countries verified</div>
+          </div>
+          <div>
+            <div class="about-stat-num">6</div>
+            <div class="about-stat-label">continents</div>
+          </div>
+          <div>
+            <div class="about-stat-num">300+</div>
+            <div class="about-stat-label">days on the road</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Email signup -->
+  <div class="email-section">
+    <div class="email-inner">
+      <div class="section-eyebrow" style="color:var(--green)">Stay in the loop</div>
+      <h2 class="section-title">The PackdUp dispatch</h2>
+      <p class="section-subtitle">Weekly travel tips, new guides and honest destination verdicts. No spam. Unsubscribe any time.</p>
+      <form class="email-form" onsubmit="submitEmail(event)">
+        <input type="email" class="email-input" placeholder="your@email.com" required id="email-input">
+        <button type="submit" class="email-btn">Subscribe free →</button>
+      </form>
+      <p class="email-note">Free forever. No spam. Unsubscribe any time.</p>
+    </div>
+  </div>
+
+</div><!-- end home screen -->
+
+<!-- ============ PLAN SCREEN ============ -->
+<div id="screen-plan" class="screen">
+  <section style="background:linear-gradient(135deg,var(--text) 0%,#2A4040 100%);padding:60px 24px 0">
+    <div style="max-width:800px;margin:0 auto;text-align:center;padding-bottom:40px">
+      <div class="section-eyebrow" style="color:var(--green)">AI Trip Planner</div>
+      <h1 class="section-title" style="color:white;font-size:clamp(28px,4vw,48px)">Plan your perfect trip</h1>
+      <p class="section-subtitle" style="color:rgba(255,255,255,0.7);margin:0 auto">
+        Powered by real firsthand experience. Not generic AI waffle.
+      </p>
+    </div>
+  </section>
+
+  <section style="background:var(--bg);padding:0 24px 80px">
+    <div style="max-width:800px;margin:0 auto">
+      <div class="planner-card" style="margin-top:-40px;position:relative;z-index:10">
+
+        <!-- Tabs -->
+        <div style="display:flex;gap:4px;margin-bottom:28px;border-bottom:1px solid var(--border);padding-bottom:16px">
+          <button class="nav-tab active" id="tab-custom" onclick="switchPlannerTab('custom')">✏️ Custom trip</button>
+          <button class="nav-tab" id="tab-route" onclick="switchPlannerTab('route')">🗺️ Route builder</button>
+          <button class="nav-tab" id="tab-destination" onclick="switchPlannerTab('destination')">🎯 Destination finder</button>
+        </div>
+
+        <!-- Custom Trip -->
+        <div id="planner-custom">
+          <div class="planner-grid">
+            <div class="form-group">
+              <label class="form-label">Where to?</label>
+              <input type="text" class="form-input" id="destination" placeholder="e.g. Colombia, Japan, Iceland...">
+            </div>
+            <div class="form-group">
+              <label class="form-label">How long?</label>
+              <select class="form-select" id="duration">
+                <option value="1 week">1 week</option>
+                <option value="2 weeks" selected>2 weeks</option>
+                <option value="3 weeks">3 weeks</option>
+                <option value="1 month">1 month</option>
+                <option value="6 weeks">6 weeks</option>
+                <option value="2 months">2 months</option>
+                <option value="3 months">3 months</option>
+                <option value="6 months">6 months</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Budget level</label>
+              <select class="form-select" id="budget">
+                <option value="shoestring (under €30/day)">Shoestring (under €30/day)</option>
+                <option value="backpacker (€30-60/day)" selected>Backpacker (€30-60/day)</option>
+                <option value="comfort (€60-100/day)">Comfort (€60-100/day)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Travelling</label>
+              <select class="form-select" id="group">
+                <option value="solo">Solo</option>
+                <option value="as a couple">Couple</option>
+                <option value="with a small group">Small group</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Passport</label>
+              <select class="form-select" id="passport">
+                <option value="Irish">🇮🇪 Irish</option>
+                <option value="British">🇬🇧 British</option>
+                <option value="American">🇺🇸 American</option>
+                <option value="Australian">🇦🇺 Australian</option>
+                <option value="Canadian">🇨🇦 Canadian</option>
+                <option value="European (EU)">🇪🇺 EU</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Experience level</label>
+              <select class="form-select" id="experience">
+                <option value="first time backpacker">First timer</option>
+                <option value="some travel experience" selected>Some experience</option>
+                <option value="experienced traveller">Experienced</option>
+                <option value="seasoned backpacker">Seasoned</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom:16px">
+            <label class="form-label">Travel vibe</label>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px" id="vibe-tags">
+              <button type="button" class="vibe-tag" onclick="toggleVibe(this)">🏔️ Adventure</button>
+              <button type="button" class="vibe-tag" onclick="toggleVibe(this)">🏛️ Culture</button>
+              <button type="button" class="vibe-tag" onclick="toggleVibe(this)">🏖️ Beaches</button>
+              <button type="button" class="vibe-tag" onclick="toggleVibe(this)">🍜 Food</button>
+              <button type="button" class="vibe-tag" onclick="toggleVibe(this)">🎉 Nightlife</button>
+              <button type="button" class="vibe-tag" onclick="toggleVibe(this)">🥾 Hiking</button>
+              <button type="button" class="vibe-tag" onclick="toggleVibe(this)">🤿 Diving</button>
+              <button type="button" class="vibe-tag" onclick="toggleVibe(this)">⚽ Sport</button>
+            </div>
+          </div>
+
+          <textarea class="form-textarea" id="extra-context" placeholder="Anything else? Countries you've been to, specific interests, anything to avoid..."></textarea>
+
+          <button class="generate-btn" onclick="generateTrip()" id="generate-btn">
+            🤖 Generate my trip plan
+          </button>
+        </div>
+
+        <!-- Route Builder placeholder -->
+        <div id="planner-route" style="display:none;text-align:center;padding:40px 0">
+          <div style="font-size:48px;margin-bottom:16px">🗺️</div>
+          <h3 style="font-family:'Playfair Display',serif;font-size:24px;margin-bottom:12px">Build Your Own Route</h3>
+          <p style="color:var(--text-2);margin-bottom:24px">Click destinations on the map to build your route. AI generates the itinerary around your stops.</p>
+          <div id="route-builder-map" style="height:400px;border-radius:12px;border:2px solid var(--border);overflow:hidden;margin-bottom:20px"></div>
+          <p style="color:var(--text-3);font-size:13px">Click any country or city to add it to your route</p>
+        </div>
+
+        <!-- Destination Finder -->
+        <div id="planner-destination" style="display:none">
+          <p style="color:var(--text-2);margin-bottom:20px">Not sure where to go? Answer 5 quick questions and we'll find your perfect destination.</p>
+          <div class="planner-grid">
+            <div class="form-group">
+              <label class="form-label">Time available</label>
+              <select class="form-select" id="df-time">
+                <option value="1 week">1 week</option>
+                <option value="2 weeks">2 weeks</option>
+                <option value="1 month">1 month</option>
+                <option value="3+ months">3+ months</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Budget</label>
+              <select class="form-select" id="df-budget">
+                <option value="ultra budget under €20/day">Ultra budget</option>
+                <option value="budget €20-40/day">Budget</option>
+                <option value="mid-range €40-80/day">Mid range</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Climate preference</label>
+              <select class="form-select" id="df-climate">
+                <option value="hot and tropical">Hot and tropical</option>
+                <option value="warm Mediterranean">Warm Mediterranean</option>
+                <option value="cool and dramatic">Cool and dramatic</option>
+                <option value="any climate">No preference</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Region preference</label>
+              <select class="form-select" id="df-region">
+                <option value="anywhere in the world">Anywhere</option>
+                <option value="in Southeast Asia">Southeast Asia</option>
+                <option value="in Latin America">Latin America</option>
+                <option value="in Europe">Europe</option>
+                <option value="in Africa">Africa</option>
+                <option value="in the Middle East">Middle East</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:16px">
+            <label class="form-label">What matters most to you?</label>
+            <textarea class="form-textarea" id="df-interests" placeholder="Adventure, culture, food, beaches, budget, wildlife, history..."></textarea>
+          </div>
+          <button class="generate-btn" onclick="findDestination()">🎯 Find my destination</button>
+        </div>
+
+        <!-- Loading -->
+        <div class="loading" id="planner-loading">
+          <div class="loading-spinner"></div>
+          <p style="color:var(--text-2);font-family:'Space Grotesk',sans-serif">Building your personalised trip plan...</p>
+        </div>
+
+        <!-- Result -->
+        <div class="result-card" id="result-card">
+          <div class="result-header" id="result-header">
+            <span class="result-flag" id="result-flag">🌍</span>
+            <span class="result-title" id="result-title">Your trip plan</span>
+          </div>
+          <div class="result-body" id="result-body"></div>
+          <div class="result-actions">
+            <button class="result-btn" onclick="copyResult()">📋 Copy</button>
+            <button class="result-btn" onclick="generateTrip()">🔄 Regenerate</button>
+            <button class="result-btn" onclick="saveResult()">💾 Save</button>
+          </div>
+          <div class="affiliate-strip">
+            <span>Book your trip:</span>
+            <a href="https://www.hostelworld.com" target="_blank" class="affiliate-link">🛏️ Hostelworld</a>
+            <a href="https://www.truetraveller.com" target="_blank" class="affiliate-link">🛡️ True Traveller</a>
+            <a href="https://www.airalo.com" target="_blank" class="affiliate-link">📱 Airalo eSIM</a>
+            <a href="https://www.getyourguide.com" target="_blank" class="affiliate-link">🎫 GetYourGuide</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ EXPLORE SCREEN ============ -->
+<div id="screen-explore" class="screen">
+  <section style="background:white;border-bottom:1px solid var(--border);padding:48px 24px 32px">
+    <div style="max-width:1200px;margin:0 auto">
+      <div class="section-eyebrow">Explore</div>
+      <h1 class="section-title">195 destinations</h1>
+      <div class="tier-legend">
+        <div class="tier-item"><div class="tier-dot" style="background:#1D9E75"></div>PackdUp Verified — personally visited</div>
+        <div class="tier-item"><div class="tier-dot" style="background:#4A90D9"></div>PackdUp Researched — thoroughly researched</div>
+        <div class="tier-item"><div class="tier-dot" style="background:#9B9B9B"></div>AI Generated — starting point only</div>
+      </div>
+      <div class="region-filters">
+        <button class="region-btn active" onclick="filterRegion('all', this)">🌍 All</button>
+        <button class="region-btn" onclick="filterRegion('latin-america', this)">🌎 Latin America</button>
+        <button class="region-btn" onclick="filterRegion('asia', this)">🌏 Asia</button>
+        <button class="region-btn" onclick="filterRegion('europe', this)">🇪🇺 Europe</button>
+        <button class="region-btn" onclick="filterRegion('africa', this)">🌍 Africa</button>
+        <button class="region-btn" onclick="filterRegion('middle-east', this)">🕌 Middle East</button>
+        <button class="region-btn" onclick="filterRegion('oceania', this)">🦘 Oceania</button>
+      </div>
+    </div>
+  </section>
+  <section style="padding:32px 24px 80px;max-width:1200px;margin:0 auto">
+    <div class="countries-grid" id="countries-grid"></div>
+  </section>
+</div>
+
+<!-- ============ ROUTES SCREEN ============ -->
+<div id="screen-routes" class="screen">
+  <section style="background:white;border-bottom:1px solid var(--border);padding:48px 24px 32px">
+    <div style="max-width:1200px;margin:0 auto">
+      <div class="section-eyebrow">Routes</div>
+      <h1 class="section-title">The great backpacker routes</h1>
+      <p class="section-subtitle">From the Gringo Trail to the Silk Road — the routes every backpacker dreams about, with honest guides for every budget.</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="routes-grid" id="routes-grid"></div>
+  </section>
+</div>
+
+<!-- ============ TOOLS SCREEN ============ -->
+<div id="screen-tools" class="screen">
+  <section style="background:white;border-bottom:1px solid var(--border);padding:48px 24px 32px">
+    <div style="max-width:1200px;margin:0 auto">
+      <div class="section-eyebrow">Tools</div>
+      <h1 class="section-title">Free travel tools</h1>
+      <p class="section-subtitle">Everything you need to plan, book and pack — all in one place, all free.</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="tools-grid" style="margin-top:0" id="tools-grid"></div>
+  </section>
+</div>
+
+<!-- ============ BLOG SCREEN ============ -->
+<div id="screen-blog" class="screen">
+  <section style="background:white;border-bottom:1px solid var(--border);padding:48px 24px 32px">
+    <div style="max-width:1200px;margin:0 auto">
+      <div class="section-eyebrow">From the road</div>
+      <h1 class="section-title">Real stories. Real experience.</h1>
+      <p class="section-subtitle">Every post written by someone who was actually there. PackdUp Verified — always.</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="blog-grid" id="blog-grid"></div>
+  </section>
+</div>
+
+<!-- ============ ABOUT SCREEN ============ -->
+<div id="screen-about" class="screen">
+  <div class="about-section" style="padding-top:60px">
+    <div class="about-inner">
+      <div class="about-photo-wrap">
+        <img class="about-photo" src="barry-photo.jpg" alt="PackdUp — Himalayan trek, Nepal 2026">
+        <div class="about-badge">
+          <span class="about-badge-num">37</span>
+          <span class="about-badge-label">countries</span>
+        </div>
+      </div>
+      <div class="about-content">
+        <div class="section-eyebrow">The story</div>
+        <h1 class="section-title">Built from the road</h1>
+        <div class="about-quote">
+          "Most AI travel tools generate plans based on nothing real. PackdUp is different."
+        </div>
+        <p class="about-text">PackdUp is built on 300+ days of firsthand travel across 37 countries and 6 continents — documented in real time on Polarsteps with 174,881 words of original travel writing.</p>
+        <p class="about-text">Every hostel pick, every budget breakdown, every honest warning — PackdUp Verified means someone was actually there. The tier system is honest: 🟢 Verified means boots on the ground. 🔵 Researched means thoroughly checked. ⚪ AI Generated means a starting point — clearly labelled.</p>
+        <p class="about-text">The platform covers all 195 countries. The advice is honest. The tools are free. That's the deal.</p>
+        <div class="about-stats">
+          <div><div class="about-stat-num">37</div><div class="about-stat-label">countries verified</div></div>
+          <div><div class="about-stat-num">174,881</div><div class="about-stat-label">words of travel writing</div></div>
+          <div><div class="about-stat-num">195</div><div class="about-stat-label">countries covered</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Accessible Travel placeholder -->
+  <div style="background:var(--green-light);border-top:1px solid var(--border);padding:60px 24px;text-align:center">
+    <div style="max-width:560px;margin:0 auto">
+      <div style="font-size:40px;margin-bottom:16px">♿</div>
+      <h2 style="font-family:'Playfair Display',serif;font-size:28px;margin-bottom:12px">Accessible Travel — Coming Soon</h2>
+      <p style="color:var(--text-2);margin-bottom:24px">A dedicated section covering accessible travel built on real lived experience. If you'd like to be notified when this launches, leave your email below.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <input type="email" style="padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;outline:none;min-width:240px" placeholder="your@email.com">
+        <button class="btn-primary">Notify me</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- PLANNER -->
-<div class="screen" id="screen-planner">
-  <div class="planner-wrap">
-    <div class="section-label">Build your trip</div>
-    <div class="form-card">
-      <div class="form-row">
-        <div class="form-group"><div class="form-label">Where to?</div><input id="dest" placeholder="Colombia, SE Asia, East Africa..."/></div>
-        <div class="form-group"><div class="form-label">How long?</div><input id="dur" placeholder="2 weeks, 3 months..."/></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><div class="form-label">Total budget</div><input id="bud" placeholder="€1,500 total, $3,000..."/></div>
-        <div class="form-group"><div class="form-label">Your passport</div><input id="pass" placeholder="Irish, Australian, UK..."/></div>
-      </div>
-      <div class="form-group">
-        <div class="form-label">Travel vibe</div>
-        <div class="style-tags">
-          <span class="style-tag" onclick="this.classList.toggle('on')">Adventure</span>
-          <span class="style-tag" onclick="this.classList.toggle('on')">Culture & history</span>
-          <span class="style-tag" onclick="this.classList.toggle('on')">Food & drink</span>
-          <span class="style-tag" onclick="this.classList.toggle('on')">Beaches</span>
-          <span class="style-tag" onclick="this.classList.toggle('on')">Nightlife</span>
-          <span class="style-tag" onclick="this.classList.toggle('on')">Local sport</span>
-          <span class="style-tag" onclick="this.classList.toggle('on')">Ultra budget</span>
-          <span class="style-tag" onclick="this.classList.toggle('on')">Working holiday</span>
-          <span class="style-tag" onclick="this.classList.toggle('on')">Off the beaten track</span>
-          <span class="style-tag" onclick="this.classList.toggle('on')">Hiking & nature</span>
-        </div>
-      </div>
-      <div class="form-group"><div class="form-label">Anything else?</div><textarea id="extra" placeholder="Solo traveller, want to watch live football, need to earn money, travelling with a partner..."></textarea></div>
-      <button class="gen-btn" id="gen-btn" onclick="generateTrip()">✨ Generate my trip plan</button>
+<!-- Country Panel -->
+<div class="country-panel" id="country-panel">
+  <div class="panel-photo" id="panel-photo">
+    <div class="panel-photo-overlay"></div>
+    <button class="panel-close" onclick="closePanel()">✕</button>
+    <div class="panel-flag-name">
+      <span class="panel-flag" id="panel-flag">🌍</span>
+      <div class="panel-country-name" id="panel-country-name">Country</div>
     </div>
-    <div class="result-card" id="result-card">
-      <div class="result-title" id="result-title"></div>
-      <div class="result-tagline" id="result-tagline"></div>
-      <div class="result-badges" id="result-badges"></div>
-      <div id="result-days"></div>
-      <div class="tip-box" id="tip-box" style="display:none"><div class="tip-label">Insider tip</div><div class="tip-text" id="tip-text"></div></div>
-      <div class="visa-box" id="visa-box" style="display:none"><div class="visa-label">Visa info</div><div class="visa-text" id="visa-text"></div></div>
-      <div class="error-box" id="error-box"></div>
-    </div>
+  </div>
+  <div class="panel-body">
+    <div class="panel-facts" id="panel-facts"></div>
+    <div class="panel-verdict" id="panel-verdict"></div>
+    <button class="panel-cta" onclick="planToCountry()">Plan a trip here →</button>
   </div>
 </div>
 
-<!-- EXPLORE -->
-<div class="screen" id="screen-explore">
-  <div class="explore-wrap">
-    <div class="section-label" style="margin-bottom:12px">Explore the world</div>
-    <div class="region-tabs" id="region-tabs"></div>
-    <div class="verified-note" id="verified-note">✓ Personally visited by our founder</div>
-    <div class="country-grid" id="country-grid"></div>
-    <div class="country-panel" id="country-panel">
-      <div class="cp-header" id="cp-header"></div>
-      <div class="vibe-row" id="cp-vibes"></div>
-      <div class="cp-sections" id="cp-sections"></div>
-      <div class="cp-places" id="cp-places"></div>
-      <button class="cp-plan-btn" id="cp-plan-btn"></button>
-      <div class="cp-source" id="cp-source"></div>
-    </div>
-  </div>
-</div>
-
-<!-- SPORT -->
-<div class="screen" id="screen-sport">
-  <div class="sport-wrap">
-    <div class="sport-hero">
-      <div class="eyebrow">The angle no travel app covers</div>
-      <h2>Sport & culture around the world</h2>
-      <p>Find live matches, local derbies, traditional sports and cultural experiences that make travel unforgettable.</p>
-    </div>
-    <div class="country-grid" id="sport-grid"></div>
-    <div class="country-panel" id="sport-panel">
-      <div class="cp-header" id="sp-header"></div>
-      <div class="vibe-row" id="sp-vibes"></div>
-      <div class="cp-sections" id="sp-sections"></div>
-      <div class="cp-places" id="sp-places"></div>
-      <button class="cp-plan-btn" id="sp-plan-btn"></button>
-    </div>
-  </div>
-</div>
-
-<!-- ABOUT -->
-<div class="screen" id="screen-about">
-  <div class="about-wrap">
-    <div class="eyebrow">Our story</div>
-    <h2>Built by a backpacker,<br>for backpackers</h2>
-    <p>PackdUp was built out of frustration. Every travel app out there was either a hotel booking engine or a generic itinerary generator with no real backpacker knowledge behind it.</p>
-    <p>Our founder is an Irish backpacker who has visited every continent except Antarctica — spending years across Latin America, Asia, Australia, Europe and the USA — always on a backpacker budget, always chasing the real experience.</p>
-    <p>PackdUp combines that real firsthand knowledge with AI to give you honest, practical travel planning — budgets that are actually achievable, tips that don't appear on the first page of Google, and a genuine passion for sport, culture and food in every destination.</p>
-    <div class="about-stats">
-      <div class="about-stat"><div class="about-stat-num">195</div><div class="about-stat-label">Countries covered</div></div>
-      <div class="about-stat"><div class="about-stat-num">6</div><div class="about-stat-label">Continents explored</div></div>
-      <div class="about-stat"><div class="about-stat-num">37+</div><div class="about-stat-label">Personally visited</div></div>
-    </div>
-    <p style="font-size:13px;color:var(--dim)">PackdUp is currently in beta. Everything is free while we gather feedback from real backpackers. We would love to know what you think.</p>
-    <div class="feedback-card">
-      <h3>Share your feedback</h3>
-      <p>We are in beta and your feedback directly shapes what we build next. What do you love? What is missing? What would you pay for?</p>
-      <div class="feedback-form">
-        <input type="text" id="fb-name" placeholder="Your name (optional)"/>
-        <input type="email" id="fb-email" placeholder="Your email (optional — for updates)"/>
-        <select id="fb-used">
-          <option value="">What did you use today?</option>
-          <option>AI Trip Planner</option>
-          <option>Explore countries</option>
-          <option>Sport & culture guides</option>
-          <option>Just browsing</option>
-        </select>
-        <textarea id="fb-message" placeholder="What did you think? What is missing? What would you love to see?"></textarea>
-        <button class="feedback-btn" id="fb-btn" onclick="submitFeedback()">Send feedback</button>
-      </div>
-    </div>
-  </div>
-</div>
-
+<!-- Footer -->
 <footer>
-  <p>PackdUp © 2025 — Built by a backpacker, for backpackers. Currently in beta — all features free.</p>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="PackdUp_Horizontal_Logo.png" alt="PackdUp" style="filter:brightness(0) invert(1);opacity:0.8">
+        <p style="margin-top:12px">The home of backpacker travel. AI trip planning powered by real experience across 6 continents.</p>
+        <p style="margin-top:8px;font-size:12px;opacity:0.5">© PackdUp 2026. All rights reserved.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <a href="#" onclick="showScreen('plan')">Plan my trip</a>
+        <a href="#" onclick="showScreen('explore')">All destinations</a>
+        <a href="#" onclick="showScreen('routes')">Backpacker routes</a>
+        <a href="#" onclick="showScreen('tools')">Free tools</a>
+        <a href="#" onclick="showScreen('blog')">Blog</a>
+      </div>
+      <div class="footer-col">
+        <h4>Tools</h4>
+        <a href="#" onclick="showScreen('tools')">Budget Calculator</a>
+        <a href="#" onclick="showScreen('tools')">Visa Checker</a>
+        <a href="#" onclick="showScreen('tools')">Packing List</a>
+        <a href="#" onclick="showScreen('tools')">GAA Clubs</a>
+        <a href="#" onclick="showScreen('tools')">Weather Window</a>
+      </div>
+      <div class="footer-col">
+        <h4>PackdUp</h4>
+        <a href="#" onclick="showScreen('about')">About</a>
+        <a href="#">PackdUp Pro</a>
+        <a href="#">Guidebooks</a>
+        <a href="#">Accessible Travel</a>
+        <a href="https://instagram.com/packduptravel" target="_blank">@packduptravel</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 PackdUp. Built by a backpacker, for backpackers.</span>
+      <div style="display:flex;gap:16px;flex-wrap:wrap">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Cookie Policy</a>
+        <a href="#">Affiliate Disclosure</a>
+      </div>
+    </div>
+  </div>
 </footer>
 
+<style>
+.vibe-tag {
+  padding: 7px 14px;
+  border-radius: 100px;
+  border: 1.5px solid var(--border);
+  background: white;
+  color: var(--text-2);
+  font-size: 13px;
+  cursor: pointer;
+  font-family: 'Space Grotesk', sans-serif;
+  transition: all 0.2s;
+}
+.vibe-tag.active {
+  background: var(--green);
+  color: white;
+  border-color: var(--green);
+}
+</style>
+
 <script>
+// ============ ASSETS ============
+const MAPBOX_TOKEN = 'pk.eyJ1IjoicGFja2R1cHRyYXZlbCIsImEiOiJjbXE3ejE2azMwNTU1MnFwemQzeGZkaHNkIn0.XlnBobNde4S9G6kURqy5pQ';
+const UNSPLASH_KEY = 'k0i-jhsmuZeRWmlZWHRN4VYH9o-cnc8xgyggPzg4rGA';
 const CF_WORKER = 'https://frosty-bread-e36d.barryamotherway.workers.dev';
+const MAILCHIMP_URL = 'https://packdup.us4.list-manage.com/subscribe/post?u=3bc3ec3868e22f4e4a7b1b745&id=f84d74e007&f_id=0033d1eaf0';
 
-const regions={
-  "Latin America":{barry:true,countries:[
-    {name:"Colombia",flag:"🇨🇴",color:"#f59e0b",bg:"rgba(245,158,11,0.12)",bd:"rgba(245,158,11,0.4)",tx:"#fcd34d",sub:"Colour & coffee",barry:true,budget:"€25-40/day",vibes:["Salsa","Coffee region","Football","Cartagena","Cumbia"],sport:"Football is a religion — Millonarios vs Santa Fe in Bogotá is electric. Cycling culture is deep. Try tejo — a traditional throwing sport played with gunpowder.",culture:"Salsa in Cali is a serious art form. Medellín's transformation is remarkable. Colombians are extraordinarily warm and proud of their country.",food:"Bandeja paisa, arepas, empanadas, fresh tropical juices. The fruit variety here is unlike anywhere else on earth.",regions:["Bogotá","Medellín","Cartagena","Cali","Coffee Region","Tayrona","San Gil","Salento"]},
-    {name:"Peru",flag:"🇵🇪",color:"#dc2626",bg:"rgba(220,38,38,0.12)",bd:"rgba(220,38,38,0.4)",tx:"#fca5a5",sub:"Inca trails & ceviche",barry:true,budget:"€30-45/day",vibes:["Machu Picchu","Ceviche","Amazon","Inca history","Surfing"],sport:"Alianza Lima vs Universitario is one of South America's great derbies. Surf culture is huge in Máncora.",culture:"The Inca history is genuinely mind-blowing. Altitude in Cusco is serious — acclimatise properly before hiking.",food:"Ceviche is the national obsession. Lima's food scene is world class. Lomo saltado, pisco sour.",regions:["Lima","Cusco","Machu Picchu","Arequipa","Máncora","Lake Titicaca","Huaraz","Amazon"]},
-    {name:"Bolivia",flag:"🇧🇴",color:"#16a34a",bg:"rgba(22,163,74,0.12)",bd:"rgba(22,163,74,0.4)",tx:"#86efac",sub:"Salt flats & altitude",barry:true,budget:"€20-30/day",vibes:["Salt flats","Death Road","La Paz","Budget travel","Altitude"],sport:"Football at altitude in La Paz at 3,600m is surreal — visiting teams visibly struggle.",culture:"The most indigenous country in South America. La Paz's witches market is unlike anything else.",food:"Salteñas for breakfast, api (purple corn drink), fricasé. The cheapest country on the continent.",regions:["La Paz","Uyuni Salt Flats","Sucre","Potosí","Rurrenabaque","Copacabana","Death Road"]},
-    {name:"Argentina",flag:"🇦🇷",color:"#60a5fa",bg:"rgba(96,165,250,0.12)",bd:"rgba(96,165,250,0.4)",tx:"#bfdbfe",sub:"Football & Patagonia",barry:true,budget:"€30-50/day",vibes:["Football","Asado","Patagonia","Tango","Wine"],sport:"Watching Boca Juniors at La Bombonera is a bucket list experience. Rugby union is massive.",culture:"Buenos Aires locals are European in character — great coffee, late dinners, passionate debate.",food:"Asado is a social ritual. Empanadas vary by province. Malbec from Mendoza.",regions:["Buenos Aires","Mendoza","Patagonia","Bariloche","Salta","Iguazú Falls","El Calafate","Córdoba"]},
-    {name:"Brazil",flag:"🇧🇷",color:"#16a34a",bg:"rgba(22,163,74,0.12)",bd:"rgba(22,163,74,0.4)",tx:"#86efac",sub:"Carnival & football",barry:true,budget:"€35-55/day",vibes:["Football","Carnival","Amazon","Beaches","Capoeira"],sport:"Flamengo vs Fluminense in Rio. Capoeira is both martial art and dance — watch it live in Salvador.",culture:"Brazil is enormous and wildly diverse. Portuguese is essential outside tourist areas.",food:"Feijoada on Saturdays is a national tradition. Açaí from street carts. Caipirinhas all day.",regions:["Rio de Janeiro","São Paulo","Salvador","Florianópolis","Manaus","Fernando de Noronha"]},
-    {name:"Chile",flag:"🇨🇱",color:"#dc2626",bg:"rgba(220,38,38,0.12)",bd:"rgba(220,38,38,0.4)",tx:"#fca5a5",sub:"Atacama to Patagonia",barry:true,budget:"€40-60/day",vibes:["Atacama","Torres del Paine","Wine","Hiking","Surf"],sport:"Colo-Colo vs Universidad de Chile is fierce. Chilean rodeo is the national sport.",culture:"Chile is the most stable in South America. The country is 4,300km long.",food:"Empanadas de pino, cazuela, completos, carménère wine.",regions:["Santiago","Atacama Desert","Torres del Paine","Valparaíso","Lake District","Easter Island"]}
-  ]},
-  "Asia":{barry:true,countries:[
-    {name:"Thailand",flag:"🇹🇭",color:"#7c3aed",bg:"rgba(124,58,237,0.12)",bd:"rgba(124,58,237,0.4)",tx:"#c4b5fd",sub:"Land of smiles",barry:true,budget:"€25-40/day",vibes:["Muay Thai","Street food","Islands","Temples","Full moon party"],sport:"Muay Thai — train at a real gym in Chiang Mai, catch fights at Rajadamnern Stadium in Bangkok.",culture:"Remove shoes at temples, never touch someone's head. Songkran water festival in April is the best party in Asia.",food:"Pad see ew, boat noodles, mango sticky rice, green curry. Market stalls always fresher than restaurants.",regions:["Bangkok","Chiang Mai","Pai","Koh Phangan","Koh Tao","Koh Lanta"]},
-    {name:"Vietnam",flag:"🇻🇳",color:"#dc2626",bg:"rgba(220,38,38,0.12)",bd:"rgba(220,38,38,0.4)",tx:"#fca5a5",sub:"Chaos & beauty",barry:true,budget:"€20-30/day",vibes:["Motorbikes","Pho","Halong Bay","History","Coffee"],sport:"Football has exploded in popularity — locals fill cafes to watch V.League and European football.",culture:"North is cooler and more reserved. South is loud and entrepreneurial. Hoi An is the cultural sweet spot.",food:"Pho, banh mi, bun cha, cao lau. Each region has completely different dishes.",regions:["Hanoi","Ha Giang","Halong Bay","Hoi An","Hue","Ho Chi Minh City","Mekong Delta"]},
-    {name:"China",flag:"🇨🇳",color:"#dc2626",bg:"rgba(220,38,38,0.12)",bd:"rgba(220,38,38,0.4)",tx:"#fca5a5",sub:"Ancient & electric",barry:true,budget:"€30-50/day",vibes:["Great Wall","Street food","Scooters","Mountains","Culture"],sport:"Basketball is massive — NBA is hugely popular. Table tennis is the national sport. Chinese Super League football is growing.",culture:"VPN essential for Google and social media. WeChat is everything. Respect for elders is deeply ingrained. Yangshuo is one of the most beautiful places on earth.",food:"Dim sum, Peking duck, hot pot, dumplings. Regional variety is staggering — Sichuan, Cantonese, Shanghainese all completely different.",regions:["Beijing","Shanghai","Yangshuo","Chengdu","Xi'an","Guilin","Hong Kong","Zhangjiajie"]},
-    {name:"Nepal",flag:"🇳🇵",color:"#dc2626",bg:"rgba(220,38,38,0.12)",bd:"rgba(220,38,38,0.4)",tx:"#fca5a5",sub:"Everest & Himalayas",barry:true,budget:"€20-35/day",vibes:["Everest Base Camp","Trekking","Culture","Buddhism","Adventure"],sport:"Cricket is surprisingly popular. Trekking is the national sport effectively — the trails are extraordinary.",culture:"Deeply spiritual country — Buddhism and Hinduism coexist beautifully. Altitude is serious, acclimatise properly. Teahouse culture on the trails is warm and welcoming.",food:"Dal bhat twice a day on the trail — rice, lentils, vegetables. Mo:mo dumplings in Kathmandu. Everest beer at Base Camp.",regions:["Kathmandu","Pokhara","Everest Base Camp","Annapurna Circuit","Chitwan","Langtang"]}
-  ]},
-  "Australia & Pacific":{barry:true,countries:[
-    {name:"Australia",flag:"🇦🇺",color:"#0369a1",bg:"rgba(3,105,161,0.12)",bd:"rgba(3,105,161,0.4)",tx:"#7dd3fc",sub:"Big, wild & sunny",barry:true,budget:"€80-120/day",vibes:["WHV","Cricket","AFL","Outback","Beaches"],sport:"AFL at the MCG in Melbourne. Cricket at the SCG. GAA clubs in every major city.",culture:"Outdoor-focused lifestyle. BBQs are social rituals. Working holiday visa community is huge and welcoming.",food:"Flat whites (world class coffee), Tim Tams, meat pies, barramundi fish and chips.",regions:["Perth","Darwin","Sydney","Melbourne","Brisbane","Cairns","Byron Bay","Uluru"]}
-  ]},
-  "Europe":{barry:true,countries:[
-    {name:"Ireland",flag:"🇮🇪",color:"#16a34a",bg:"rgba(22,163,74,0.12)",bd:"rgba(22,163,74,0.4)",tx:"#86efac",sub:"Wild craic & green",barry:true,budget:"€65-95/day",vibes:["GAA","Trad music","Pubs","Cliffs","Craic"],sport:"GAA is unlike anything in world sport — an All-Ireland final in Croke Park is a bucket list experience.",culture:"The pub is the heart of Irish social life — music, chat and community.",food:"Full Irish breakfast, soda bread, seafood chowder on the west coast. Guinness tastes better in Ireland.",regions:["Dublin","Galway","Cork","Kerry","Dingle","Donegal","Clare","Belfast"]},
-    {name:"Spain",flag:"🇪🇸",color:"#dc2626",bg:"rgba(220,38,38,0.12)",bd:"rgba(220,38,38,0.4)",tx:"#fca5a5",sub:"Football & fiesta",barry:true,budget:"€45-70/day",vibes:["La Liga","Tapas","Flamenco","Beaches","Siesta"],sport:"El Clásico is the biggest club match on earth. A La Liga game at Camp Nou or Bernabéu is electric.",culture:"Siesta is real — everything closes 2-5pm. Dinner at 10pm is normal.",food:"Jamón ibérico, patatas bravas, tortilla española. San Sebastián has the most Michelin stars per capita on earth.",regions:["Barcelona","Madrid","Seville","San Sebastián","Valencia","Granada","Bilbao"]},
-    {name:"Portugal",flag:"🇵🇹",color:"#b45309",bg:"rgba(180,83,9,0.12)",bd:"rgba(180,83,9,0.4)",tx:"#fcd34d",sub:"Fado & pastéis",barry:true,budget:"€40-60/day",vibes:["Surfing","Fado","Pastel de nata","Cheap wine","History"],sport:"Football is taken as seriously as in Brazil. Surfing at Nazaré has the biggest waves in the world.",culture:"Saudade — a uniquely Portuguese melancholy — is in the music and the people.",food:"Pastel de nata, bacalhau (365 recipes), francesinha in Porto, grilled sardines.",regions:["Lisbon","Porto","Algarve","Sintra","Douro Valley","Nazaré","Azores"]}
-  ]},
-  "USA & Canada":{barry:true,countries:[
-    {name:"USA",flag:"🇺🇸",color:"#dc2626",bg:"rgba(220,38,38,0.12)",bd:"rgba(220,38,38,0.4)",tx:"#fca5a5",sub:"Vast & varied",barry:true,budget:"€60-100/day",vibes:["Road trips","Baseball","National Parks","NYC","Country music"],sport:"NBA, NFL, MLB and NHL all have passionate followings. Attending a live game in any city is a cultural experience.",culture:"America is not one culture — New York and rural Texas are different planets. Road trips unlock the real country.",food:"Regional food is everything — BBQ in Texas, clam chowder in Boston, po'boys in New Orleans. Always tip.",regions:["New York","New Orleans","Los Angeles","Chicago","Nashville","San Francisco","National Parks","Miami"]}
-  ]},
-  "Africa":{barry:false,countries:[
-    {name:"Morocco",flag:"🇲🇦",color:"#b45309",bg:"rgba(180,83,9,0.12)",bd:"rgba(180,83,9,0.4)",tx:"#fcd34d",sub:"Spice & soul",barry:false,budget:"€25-40/day",vibes:["Souks","Sahara","Mint tea","Medinas","Tagine"],sport:"Raja Casablanca vs Wydad is one of Africa's most passionate derbies.",culture:"Ramadan changes everything. Bargaining in souks is expected. Learn 3 words of Darija and locals will respond warmly.",food:"Tagine, couscous on Fridays, harira soup, fresh orange juice everywhere for 50 cents.",regions:["Marrakech","Fes","Chefchaouen","Merzouga","Essaouira","Casablanca"]},
-    {name:"South Africa",flag:"🇿🇦",color:"#16a34a",bg:"rgba(22,163,74,0.12)",bd:"rgba(22,163,74,0.4)",tx:"#86efac",sub:"Rainbow nation",barry:false,budget:"€35-55/day",vibes:["Safari","Rugby","Braai","Cape Town","Diverse cultures"],sport:"The Springboks are among the best rugby teams in history. A test at Ellis Park is electric.",culture:"11 official languages — the cultural diversity is astonishing. Use Uber in cities rather than street taxis.",food:"Braai is a cultural institution. Biltong, boerewors, bunny chow in Durban.",regions:["Cape Town","Johannesburg","Kruger Park","Garden Route","Drakensberg","Stellenbosch"]}
-  ]},
-  "Middle East":{barry:false,countries:[
-    {name:"Jordan",flag:"🇯🇴",color:"#b45309",bg:"rgba(180,83,9,0.12)",bd:"rgba(180,83,9,0.4)",tx:"#fcd34d",sub:"Petra & desert",barry:false,budget:"€40-60/day",vibes:["Petra","Wadi Rum","Dead Sea","Hospitality","History"],sport:"Football is popular locally. Camel racing is a traditional spectacle in desert regions.",culture:"Jordanian hospitality is legendary — accepting tea is respect, not optional.",food:"Mansaf eaten from a communal tray. Falafel, hummus, fattoush, mint tea constantly.",regions:["Amman","Petra","Wadi Rum","Dead Sea","Aqaba","Jerash"]},
-    {name:"Georgia",flag:"🇬🇪",color:"#dc2626",bg:"rgba(220,38,38,0.12)",bd:"rgba(220,38,38,0.4)",tx:"#fca5a5",sub:"Wine, mountains & soul",barry:false,budget:"€25-40/day",vibes:["Wine","Caucasus hiking","Tbilisi nightlife","Food","History"],sport:"Wrestling has deep roots — Georgian wrestlers dominate internationally.",culture:"One of the world's oldest wine regions. Tbilisi's old town is genuinely atmospheric.",food:"Khachapuri is one of the great street foods in the world. Khinkali dumplings, natural wines.",regions:["Tbilisi","Kazbegi","Batumi","Kakheti wine region","Kutaisi","Mestia"]}
-  ]}
-};
+// ============ COUNTRIES DATA ============
+const VERIFIED_COUNTRIES = ['IE','CA','MX','BZ','GT','SV','NI','PA','CO','EC','PE','BO','CL','AR','BR','NP','CN','HK','MO','IN','JO','AU','MA'];
 
-const sportData=[
-  {name:"Live football",flag:"⚽",color:"#16a34a",bg:"rgba(22,163,74,0.12)",bd:"rgba(22,163,74,0.4)",tx:"#86efac",sub:"Find a derby anywhere",budget:"€5-30 per match",vibes:["Ultra culture","Local derbies","Cheap tickets","Atmosphere"],sport:"South America has the most passionate football culture on earth — a Boca Juniors game in Buenos Aires or Flamengo in Rio is unlike anything in European football.",culture:"Buy tickets at the gate for local leagues. Learn the home team name and one chant before you arrive.",food:"Choripan in Argentina, coxinha in Brazil, meat pies in England, sticky rice in Thailand.",regions:["Buenos Aires","Rio de Janeiro","Bogotá","Istanbul","Cairo","Lagos","Bangkok","Madrid"]},
-  {name:"GAA abroad",flag:"🏐",color:"#16a34a",bg:"rgba(22,163,74,0.12)",bd:"rgba(22,163,74,0.4)",tx:"#86efac",sub:"Irish sport, every continent",budget:"Free to play",vibes:["Irish community","Job leads","Social life","Every continent"],sport:"GAA clubs exist on every continent. Turning up instantly connects you with the Irish community — our founder plays GAA in Perth, Western Australia.",culture:"Turn up in your county jersey, introduce yourself and you are in. The GAA abroad community is the most welcoming in the world.",food:"Usually ends at an Irish pub — wherever in the world you are.",regions:["Perth","Sydney","New York","London","Dubai","Singapore","Berlin","Toronto","Buenos Aires"]},
-  {name:"Muay Thai",flag:"🥊",color:"#7c3aed",bg:"rgba(124,58,237,0.12)",bd:"rgba(124,58,237,0.4)",tx:"#c4b5fd",sub:"Thailand's living art",budget:"€10-20/day training",vibes:["Training camps","Live fights","Discipline","Cultural immersion"],sport:"Train at a real gym in Chiang Mai for a week — genuinely life-changing. Bangkok's Rajadamnern and Lumpinee Stadiums host the best fights.",culture:"The Wai Kru pre-fight ritual honours teachers and is deeply spiritual. Treat it with respect.",food:"Train hard in the morning, eat rice and eggs. The training lifestyle is as much the experience as the fighting.",regions:["Chiang Mai","Bangkok","Koh Phangan","Pai","Phuket"]},
-  {name:"Rugby culture",flag:"🏉",color:"#b45309",bg:"rgba(180,83,9,0.12)",bd:"rgba(180,83,9,0.4)",tx:"#fcd34d",sub:"Southern hemisphere passion",budget:"€20-80 per match",vibes:["All Blacks","Springboks","Six Nations","Pub culture"],sport:"An All Blacks test at Eden Park with the haka is the most spine-tingling sporting entrance in the world.",culture:"Rugby cultures in NZ, South Africa and Australia are tribal and deeply social.",food:"Pies in New Zealand and Australia. Braai in South Africa. Full Irish breakfast before a match in Dublin.",regions:["Auckland","Johannesburg","Dublin","Cardiff","Edinburgh","Sydney","Buenos Aires"]},
-  {name:"Cricket culture",flag:"🏏",color:"#0369a1",bg:"rgba(3,105,161,0.12)",bd:"rgba(3,105,161,0.4)",tx:"#7dd3fc",sub:"India, Aus & Caribbean",budget:"€10-60 per match",vibes:["Test matches","IPL","Beach cricket","Community"],sport:"A Test match at the MCG or SCG in Australia is a bucket list experience. The IPL in India is pure spectacle.",culture:"In India cricket is religion — ask a local about their team and you will have a friend for life.",food:"MCG pies in Melbourne, chai and samosas at Indian grounds, rum punch in the Caribbean.",regions:["Melbourne","Mumbai","Kolkata","Bridgetown","London","Colombo","Durban"]},
-  {name:"Festival culture",flag:"🎉",color:"#db2777",bg:"rgba(219,39,119,0.12)",bd:"rgba(219,39,119,0.4)",tx:"#f9a8d4",sub:"Celebrations worldwide",budget:"€20-100 per event",vibes:["Carnival","Songkran","Oktoberfest","Holi","Semana Santa"],sport:"Plan your travel around major festivals and you will experience places at their most alive.",culture:"Carnival in Rio, Semana Santa in Seville, Holi in Varanasi, Songkran in Chiang Mai — each is unforgettable.",food:"Every festival has its own food culture — churros at Semana Santa, gingerbread at Christmas markets.",regions:["Rio de Janeiro","Barranquilla","Seville","Varanasi","Chiang Mai","Munich","Pamplona"]}
+const COUNTRIES = [
+  // LATAM - Barry Verified
+  {code:'MX',name:'Mexico',flag:'🇲🇽',region:'latin-america',tier:'verified',budget:'€25-40',best_time:'Nov-Apr',verdict:'Holbox is paradise. Chichén Itzá at 7am before the crowds. Go independent.'},
+  {code:'BZ',name:'Belize',flag:'🇧🇿',region:'latin-america',tier:'verified',budget:'€35-55',best_time:'Nov-Apr',verdict:'Three days snorkelling the second largest barrier reef in the world. Go Slow.'},
+  {code:'GT',name:'Guatemala',flag:'🇬🇹',region:'latin-america',tier:'verified',budget:'€25-40',best_time:'Nov-Apr',verdict:'The most varied country in Central America. Acatenango, Tikal, Semuc Champey, Lake Atitlán. Do all of it.'},
+  {code:'SV',name:'El Salvador',flag:'🇸🇻',region:'latin-america',tier:'verified',budget:'€20-35',best_time:'Nov-Apr',verdict:'The most underrated country in Central America. Héctor\'s tour in Santa Ana is one of the best experiences on the entire route.'},
+  {code:'NI',name:'Nicaragua',flag:'🇳🇮',region:'latin-america',tier:'verified',budget:'€20-35',best_time:'Nov-Apr',verdict:'Volcano boarding on Cerro Negro. The Nicaragua boat crossing. Granada\'s Treehouse Party.'},
+  {code:'PA',name:'Panama',flag:'🇵🇦',region:'latin-america',tier:'verified',budget:'€35-55',best_time:'Dec-Apr',verdict:'San Blas Islands are genuinely one of the best things on the entire route. Spend 4 nights minimum.'},
+  {code:'CO',name:'Colombia',flag:'🇨🇴',region:'latin-america',tier:'verified',budget:'€30-50',best_time:'Dec-Mar',verdict:'The most complete country in South America. Ciudad que chimba.'},
+  {code:'EC',name:'Ecuador',flag:'🇪🇨',region:'latin-america',tier:'verified',budget:'€25-45',best_time:'Jun-Sep',verdict:'Secret Garden Cotopaxi is the best hostel of the entire trip. Full stop.'},
+  {code:'PE',name:'Peru',flag:'🇵🇪',region:'latin-america',tier:'verified',budget:'€25-45',best_time:'May-Oct',verdict:'The best food in South America. Machu Picchu is worth every step of the Salkantay Trek.'},
+  {code:'BO',name:'Bolivia',flag:'🇧🇴',region:'latin-america',tier:'verified',budget:'€18-30',best_time:'May-Oct',verdict:'One word: chaotic. In the best way. Death Road. Huayna Potosí. Uyuni. Do all three.'},
+  {code:'CL',name:'Chile',flag:'🇨🇱',region:'latin-america',tier:'verified',budget:'€40-70',best_time:'Nov-Mar',verdict:'Torres del Paine is worth the price tag. Patagonia is a different world.'},
+  {code:'AR',name:'Argentina',flag:'🇦🇷',region:'latin-america',tier:'verified',budget:'€30-50',best_time:'Oct-Apr',verdict:'Buenos Aires is the most liveable city in South America. La Cabrera at 5.30pm happy hour is mandatory.'},
+  {code:'BR',name:'Brazil',flag:'🇧🇷',region:'latin-america',tier:'verified',budget:'€35-60',best_time:'Apr-Sep',verdict:'Rio is extraordinary. Pedra do Sal on a Monday night is one of the great travel experiences.'},
+  // ASIA - Barry Verified
+  {code:'NP',name:'Nepal',flag:'🇳🇵',region:'asia',tier:'verified',budget:'€20-35',best_time:'Mar-May,Sep-Nov',verdict:'Kala Patthar at 4am in -26 degrees. The best 12 days of the trip. Non-negotiable.'},
+  {code:'CN',name:'China',flag:'🇨🇳',region:'asia',tier:'verified',budget:'€30-50',best_time:'Apr-Jun,Sep-Oct',verdict:'Zhangjiajie is on another planet. Yangshuo on a scooter is the best day in China.'},
+  {code:'IN',name:'India',flag:'🇮🇳',region:'asia',tier:'verified',budget:'€20-40',best_time:'Oct-Mar',verdict:'India will break every expectation. Give it time. The first week is overwhelming. By week three you don\'t want to leave.'},
+  {code:'JP',name:'Japan',flag:'🇯🇵',region:'asia',tier:'researched',budget:'€50-100',best_time:'Mar-May,Oct-Nov',verdict:'The most efficient, beautiful, food-obsessed country on earth. Budget more time than you think.'},
+  {code:'TH',name:'Thailand',flag:'🇹🇭',region:'asia',tier:'researched',budget:'€25-50',best_time:'Nov-Apr',verdict:'The gateway to Southeast Asia. Chiang Mai for culture, Pai for mountains, Uluwatu for surf.'},
+  {code:'VN',name:'Vietnam',flag:'🇻🇳',region:'asia',tier:'researched',budget:'€20-40',best_time:'Nov-Apr',verdict:'The country most backpackers fall in love with. The food alone is worth the trip.'},
+  {code:'ID',name:'Indonesia',flag:'🇮🇩',region:'asia',tier:'researched',budget:'€25-45',best_time:'Apr-Oct',verdict:'7,641 islands. Go beyond Bali. Flores, Komodo, Lombok — each one extraordinary.'},
+  {code:'KH',name:'Cambodia',flag:'🇰🇭',region:'asia',tier:'researched',budget:'€20-35',best_time:'Nov-Apr',verdict:'Angkor Wat at sunrise is genuinely one of the great wonders. Buy the 3-day pass.'},
+  {code:'PH',name:'Philippines',flag:'🇵🇭',region:'asia',tier:'researched',budget:'€25-45',best_time:'Nov-May',verdict:'El Nido is the most beautiful island in Asia. Everything else is a bonus.'},
+  // MIDDLE EAST - Barry Verified
+  {code:'JO',name:'Jordan',flag:'🇯🇴',region:'middle-east',tier:'verified',budget:'€40-70',best_time:'Mar-May,Sep-Nov',verdict:'Petra at dawn. Wadi Rum under the stars. Dead Sea floating. A tiny country with an extraordinary amount to see.'},
+  {code:'PS',name:'Palestine',flag:'🇵🇸',region:'middle-east',tier:'researched',budget:'€30-50',best_time:'Mar-May,Sep-Nov',verdict:'A destination of profound history, extraordinary culture and remarkable resilience. PackdUp supports the people of Palestine.'},
+  // EUROPE
+  {code:'IE',name:'Ireland',flag:'🇮🇪',region:'europe',tier:'verified',budget:'€60-100',best_time:'May-Sep',verdict:'Home. Wild Atlantic Way, GAA culture, craic. The best starting point for any backpacker adventure.'},
+  {code:'ES',name:'Spain',flag:'🇪🇸',region:'europe',tier:'verified',budget:'€40-70',best_time:'Apr-Jun,Sep-Oct',verdict:'The Alhambra in Granada is extraordinary. Seville for tapas. Barcelona for everything else.'},
+  {code:'PT',name:'Portugal',flag:'🇵🇹',region:'europe',tier:'researched',budget:'€35-60',best_time:'Apr-Oct',verdict:'The most underrated country in Western Europe. Lisbon is one of the great cities.'},
+  {code:'FR',name:'France',flag:'🇫🇷',region:'europe',tier:'verified',budget:'€60-100',best_time:'May-Sep',verdict:'Paris is everything and more. Go early to every museum. Eat in the 5th arrondissement.'},
+  {code:'DE',name:'Germany',flag:'🇩🇪',region:'europe',tier:'verified',budget:'€50-80',best_time:'May-Oct',verdict:'Berlin is the most interesting city in Europe. Go to Berghain. The history is essential.'},
+  {code:'IT',name:'Italy',flag:'🇮🇹',region:'europe',tier:'verified',budget:'€50-90',best_time:'Apr-Jun,Sep-Oct',verdict:'Rome will take your breath away. Naples has the best pizza on earth. The Amalfi Coast is worth the expense.'},
+  {code:'GR',name:'Greece',flag:'🇬🇷',region:'europe',tier:'verified',budget:'€40-70',best_time:'May-Oct',verdict:'The Acropolis at opening time. The islands at sunset. Athens is underrated.'},
+  {code:'HR',name:'Croatia',flag:'🇭🇷',region:'europe',tier:'verified',budget:'€45-75',best_time:'Jun-Sep',verdict:'Dubrovnik, Split, Hvar. The most beautiful coastline in Europe. Go before peak season.'},
+  // AFRICA
+  {code:'MA',name:'Morocco',flag:'🇲🇦',region:'africa',tier:'verified',budget:'€25-45',best_time:'Mar-May,Sep-Nov',verdict:'Fes medina is genuinely medieval. Erg Chebbi desert at night is extraordinary. Chefchaouen at dawn.'},
+  {code:'KE',name:'Kenya',flag:'🇰🇪',region:'africa',tier:'researched',budget:'€50-100',best_time:'Jun-Oct,Jan-Feb',verdict:'The Masai Mara and the Great Migration are among the great natural spectacles on earth.'},
+  {code:'TZ',name:'Tanzania',flag:'🇹🇿',region:'africa',tier:'researched',budget:'€50-100',best_time:'Jun-Oct',verdict:'The Serengeti is everything you\'ve been told. Kilimanjaro is doable for fit non-technical climbers.'},
+  {code:'ZA',name:'South Africa',flag:'🇿🇦',region:'africa',tier:'researched',budget:'€40-80',best_time:'Oct-Apr',verdict:'Cape Town is one of the great cities on earth. The Kruger self-drive safari is extraordinary.'},
+  // OCEANIA
+  {code:'AU',name:'Australia',flag:'🇦🇺',region:'oceania',tier:'verified',budget:'€70-120',best_time:'Apr-Oct',verdict:'The Working Holiday Visa is one of the best decisions you\'ll make. The east coast route is a rite of passage.'},
+  {code:'NZ',name:'New Zealand',flag:'🇳🇿',region:'oceania',tier:'researched',budget:'€70-120',best_time:'Dec-Apr',verdict:'Tongariro Crossing, Milford Sound, the West Coast glaciers. Will ruin everywhere else.'},
 ];
 
-let currentCountries=[];
+const ROUTES = [
+  {
+    name: 'The Gringo Trail',
+    desc: 'Mexico to Patagonia — the most epic backpacker route on earth',
+    flags: '🇲🇽🇧🇿🇬🇹🇸🇻🇳🇮🇵🇦🇨🇴🇪🇨🇵🇪🇧🇴🇨🇱🇦🇷🇧🇷',
+    duration: '3-12 months',
+    budget: '€25-50/day',
+    photo: 'https://images.unsplash.com/photo-1526392060635-9d6019884377?w=800&q=80',
+    tier: 'verified'
+  },
+  {
+    name: 'Southeast Asia Circuit',
+    desc: 'Bangkok to Bali — the route that turns people into backpackers',
+    flags: '🇹🇭🇱🇦🇰🇭🇻🇳🇲🇾🇮🇩',
+    duration: '6-12 weeks',
+    budget: '€20-40/day',
+    photo: 'https://images.unsplash.com/photo-1539367628448-4bc5c9d171c8?w=800&q=80',
+    tier: 'researched'
+  },
+  {
+    name: 'EBC Trek — Nepal',
+    desc: 'Lukla to Kala Patthar — 12 days to the roof of the world',
+    flags: '🇳🇵',
+    duration: '12-14 days',
+    budget: '€40-60/day',
+    photo: 'https://images.unsplash.com/photo-1516912481808-3406841bd33c?w=800&q=80',
+    tier: 'verified'
+  },
+  {
+    name: 'Central Asia Silk Road',
+    desc: 'Uzbekistan, Kyrgyzstan, Kazakhstan — the most underrated route on earth',
+    flags: '🇺🇿🇰🇬🇰🇿🇹🇯',
+    duration: '3-6 weeks',
+    budget: '€25-40/day',
+    photo: 'https://images.unsplash.com/photo-1590664863685-a99ef05e9f61?w=800&q=80',
+    tier: 'researched'
+  },
+  {
+    name: 'East Africa',
+    desc: 'Kenya, Tanzania, Rwanda — safari, gorillas and Kilimanjaro',
+    flags: '🇰🇪🇹🇿🇷🇼🇺🇬🇪🇹',
+    duration: '3-6 weeks',
+    budget: '€50-100/day',
+    photo: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=800&q=80',
+    tier: 'researched'
+  },
+  {
+    name: 'Europe Interrailing',
+    desc: 'Five routes across Europe — from the Balkans to Scandinavia',
+    flags: '🇬🇧🇫🇷🇩🇪🇮🇹🇪🇸🇵🇹🇭🇷🇧🇦🇬🇷',
+    duration: '2-8 weeks',
+    budget: '€50-90/day',
+    photo: 'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=800&q=80',
+    tier: 'researched'
+  },
+  {
+    name: 'Southern Africa',
+    desc: 'Cape Town to Victoria Falls — the wildlife route',
+    flags: '🇿🇦🇳🇦🇧🇼🇿🇼🇿🇲',
+    duration: '3-6 weeks',
+    budget: '€50-100/day',
+    photo: 'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=800&q=80',
+    tier: 'researched'
+  },
+  {
+    name: 'Japan',
+    desc: 'Tokyo to Hiroshima — the country that breaks every expectation',
+    flags: '🇯🇵',
+    duration: '2-4 weeks',
+    budget: '€60-100/day',
+    photo: 'https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=800&q=80',
+    tier: 'researched'
+  },
+  {
+    name: 'Iceland & Norway',
+    desc: 'Glaciers, fjords and the Northern Lights',
+    flags: '🇮🇸🇳🇴',
+    duration: '2-4 weeks',
+    budget: '€80-140/day',
+    photo: 'https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=800&q=80',
+    tier: 'researched'
+  },
+  {
+    name: 'Australia East Coast',
+    desc: 'Sydney to Cairns — the backpacker rite of passage',
+    flags: '🇦🇺',
+    duration: '4-12 weeks',
+    budget: '€70-110/day',
+    photo: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80',
+    tier: 'verified'
+  },
+  {
+    name: 'Northern Pakistan',
+    desc: 'Hunza Valley, Karakoram Highway — the most dramatic scenery on earth',
+    flags: '🇵🇰🇮🇳',
+    duration: '3-5 weeks',
+    budget: '€20-40/day',
+    photo: 'https://images.unsplash.com/photo-1586290765575-f51a68e7e62f?w=800&q=80',
+    tier: 'researched'
+  },
+  {
+    name: 'Indonesia',
+    desc: 'Bali, Java, Komodo, Flores — 17,000 islands to explore',
+    flags: '🇮🇩',
+    duration: '3-8 weeks',
+    budget: '€25-50/day',
+    photo: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800&q=80',
+    tier: 'researched'
+  },
+];
 
-function showScreen(id,btn){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('screen-'+id).classList.add('active');
-  if(btn)btn.classList.add('active');
+const BLOG_POSTS = [
+  {title:'Rio de Janeiro — The Honest Backpacker Guide',country:'Brazil',flag:'🇧🇷',category:'City Guide',excerpt:'Five days of rain, a barber who took too much off, and still one of the most extraordinary cities on earth.',photo:'https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=800&q=80',read_time:'12 min'},
+  {title:'The Salkantay Trek to Machu Picchu — Complete 5 Day Guide',country:'Peru',flag:'🇵🇪',category:'Trekking',excerpt:'Five days through the Andes. A hangover on the 26km day. A sunrise that makes it all worth it.',photo:'https://images.unsplash.com/photo-1526392060635-9d6019884377?w=800&q=80',read_time:'15 min'},
+  {title:'Death Road Bolivia — Everything You Need to Know',country:'Bolivia',flag:'🇧🇴',category:'Adventure',excerpt:'The most dangerous road in the world. Barracuda bikes. One puncture with 5km to go.',photo:'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=800&q=80',read_time:'10 min'},
+  {title:'La Bombonera — Match Day at Boca Juniors',country:'Argentina',flag:'🇦🇷',category:'Sport',excerpt:'Got in on a passport barcode scan. Best decision of the trip.',photo:'https://images.unsplash.com/photo-1540747913346-19212a4b6b3b?w=800&q=80',read_time:'8 min'},
+  {title:'Semuc Champey — Guatemala\'s Hidden Paradise',country:'Guatemala',flag:'🇬🇹',category:'Nature',excerpt:'La Bomba, the caves, the mirador with the best view I\'ve ever seen in my life.',photo:'https://images.unsplash.com/photo-1551632811-561732d1e306?w=800&q=80',read_time:'9 min'},
+  {title:'Huayna Potosí — Summiting a 6,088m Mountain',country:'Bolivia',flag:'🇧🇴',category:'Trekking',excerpt:'Three days. Two nights at altitude. One moment blacking out on the glacier.',photo:'https://images.unsplash.com/photo-1578894381163-e72c17f2d45f?w=800&q=80',read_time:'11 min'},
+];
+
+const TOOLS_DATA = [
+  {icon:'🗺️',name:'AI Trip Planner',desc:'Complete personalised itinerary in seconds. Built on real verified experience.',badge:'Most popular',action:'plan'},
+  {icon:'✏️',name:'Build Your Route',desc:'Click destinations on a map. AI builds the itinerary around your stops.',badge:'New',action:'plan'},
+  {icon:'💰',name:'Budget Calculator',desc:'Real daily costs from verified firsthand spending data. Not estimates.',badge:null,action:'tools'},
+  {icon:'🛂',name:'Visa Checker',desc:'Instant visa requirements for any passport and destination combination.',badge:null,action:'tools'},
+  {icon:'🎒',name:'Packing List Generator',desc:'Custom packing lists by destination, duration, climate and activities.',badge:null,action:'tools'},
+  {icon:'⛅',name:'Weather Window',desc:'Find the best time to visit any destination in the world.',badge:null,action:'tools'},
+  {icon:'☘️',name:'GAA Clubs Worldwide',desc:'Find your local GAA club in any city in the world. For the Irish diaspora.',badge:'Irish exclusive',action:'tools'},
+  {icon:'🔄',name:'Trip Comparison',desc:'Colombia vs Peru? Bolivia vs Ecuador? Side by side honest comparison.',badge:null,action:'tools'},
+  {icon:'🛡️',name:'Insurance Comparison',desc:'True Traveller vs SafetyWing vs World Nomads — honest side by side.',badge:null,action:'tools'},
+  {icon:'🌶️',name:'Local Food Bible',desc:'What to eat, what to say when ordering, what to avoid in every country.',badge:null,action:'tools'},
+  {icon:'⚠️',name:'Scam Encyclopedia',desc:'Every major tourist scam by country. Know before you go.',badge:null,action:'tools'},
+  {icon:'🏔️',name:'Altitude Checker',desc:'Full altitude sickness risk assessment for any trekking route.',badge:null,action:'tools'},
+];
+
+// ============ NAVIGATION ============
+let currentScreen = 'home';
+let selectedVibes = [];
+let selectedCountry = null;
+
+function showScreen(screen) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  const el = document.getElementById(`screen-${screen}`);
+  if (el) el.classList.add('active');
+  const navEl = document.getElementById(`nav-${screen}`);
+  if (navEl) navEl.classList.add('active');
+  currentScreen = screen;
   window.scrollTo(0,0);
+  if (screen === 'explore') renderCountries('all');
+  if (screen === 'routes') renderRoutes('routes-grid');
+  if (screen === 'tools') renderTools();
+  if (screen === 'blog') renderBlog('blog-grid');
 }
 
-function buildRegionTabs(){
-  const el=document.getElementById('region-tabs');
-  el.innerHTML=Object.keys(regions).map(r=>`<button class="rtab${regions[r].barry?' barry':''}" onclick="selectRegion('${r}',this)">${r}${regions[r].barry?' ✓':''}</button>`).join('');
+function switchPlannerTab(tab) {
+  document.querySelectorAll('#screen-plan .nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(`tab-${tab}`).classList.add('active');
+  document.getElementById('planner-custom').style.display = tab === 'custom' ? 'block' : 'none';
+  document.getElementById('planner-route').style.display = tab === 'route' ? 'block' : 'none';
+  document.getElementById('planner-destination').style.display = tab === 'destination' ? 'block' : 'none';
+  if (tab === 'route') initRouteBuilder();
 }
 
-function selectRegion(name,btn){
-  document.querySelectorAll('.rtab').forEach(t=>t.classList.remove('active'));
-  btn.classList.add('active');
-  const r=regions[name];
-  currentCountries=r.countries;
-  document.getElementById('verified-note').classList.toggle('show',r.barry);
-  renderGrid(r.countries,'country-grid','country-panel','cp-header','cp-vibes','cp-sections','cp-places','cp-plan-btn','cp-source');
-  document.getElementById('country-panel').classList.remove('show');
-}
-
-function renderGrid(data,gridId,panelId,headId,vibesId,sectId,placesId,btnId,sourceId){
-  document.getElementById(gridId).innerHTML=data.map((c,i)=>`
-    <div class="country-card" style="background:${c.bg};border-color:${c.bd}" onclick="openCard(${i},'${gridId}','${panelId}','${headId}','${vibesId}','${sectId}','${placesId}','${btnId}','${sourceId||''}')">
-      ${c.barry?'<div class="verified-dot">✓</div>':''}
-      <div class="cc-flag">${c.flag}</div>
-      <div class="cc-name" style="color:${c.tx}">${c.name}</div>
-      <div class="cc-sub" style="color:${c.tx}">${c.sub}</div>
-    </div>`).join('');
-}
-
-function openCard(i,gridId,panelId,headId,vibesId,sectId,placesId,btnId,sourceId){
-  const data=gridId==='sport-grid'?sportData:currentCountries;
-  const c=data[i];
-  if(!c)return;
-  const panel=document.getElementById(panelId);
-  panel.style.background=c.bg.replace('0.12','0.05');
-  panel.style.borderColor=c.bd;
-  document.getElementById(headId).innerHTML=`<div class="cp-flag">${c.flag}</div><div style="flex:1"><div class="cp-name" style="color:${c.tx}">${c.name}</div><div class="cp-tagline" style="color:${c.tx}">${c.sub}</div></div><div class="cp-budget" style="background:${c.bg};color:${c.tx};border:0.5px solid ${c.bd}">${c.budget}</div>`;
-  document.getElementById(vibesId).innerHTML=c.vibes.map(v=>`<span class="vibe-pill" style="background:${c.bg};color:${c.tx};border:0.5px solid ${c.bd}">${v}</span>`).join('');
-  document.getElementById(sectId).innerHTML=`
-    <div class="cp-section" style="background:${c.bg.replace('0.12','0.04')}"><div class="cp-section-label" style="color:${c.tx}">Sport</div><div class="cp-section-text" style="color:${c.tx}">${c.sport}</div></div>
-    <div class="cp-section" style="background:${c.bg.replace('0.12','0.04')}"><div class="cp-section-label" style="color:${c.tx}">Culture</div><div class="cp-section-text" style="color:${c.tx}">${c.culture}</div></div>
-    <div class="cp-section full" style="background:${c.bg.replace('0.12','0.04')}"><div class="cp-section-label" style="color:${c.tx}">Food & drink</div><div class="cp-section-text" style="color:${c.tx}">${c.food}</div></div>`;
-  document.getElementById(placesId).innerHTML=(c.regions||[]).map(r=>`<span class="place-chip" onclick="planPlace('${c.name}','${r}')">${r}</span>`).join('');
-  const planBtn=document.getElementById(btnId);
-  planBtn.style.background=c.color;
-  planBtn.textContent=`Plan a trip to ${c.name} →`;
-  planBtn.onclick=()=>{document.getElementById('dest').value=c.name;showScreen('planner',document.querySelectorAll('.nav-btn')[1]);};
-  if(sourceId){const src=document.getElementById(sourceId);if(src)src.textContent=c.barry?'Personally visited and verified by our founder — real firsthand knowledge.':'AI-compiled from verified travel sources — updated regularly.';}
-  panel.classList.add('show');
-}
-
-function planPlace(country,place){
-  document.getElementById('dest').value=`${place}, ${country}`;
-  showScreen('planner',document.querySelectorAll('.nav-btn')[1]);
-}
-
-async function generateTrip(){
-  const dest=document.getElementById('dest').value.trim();
-  const dur=document.getElementById('dur').value.trim();
-  const bud=document.getElementById('bud').value.trim();
-  const pass=document.getElementById('pass').value.trim();
-  const extra=document.getElementById('extra').value.trim();
-  const vibes=[...document.querySelectorAll('.style-tag.on')].map(t=>t.textContent).join(', ');
-  const errBox=document.getElementById('error-box');
-  errBox.style.display='none';
-  if(!dest){document.getElementById('dest').style.borderColor='#dc2626';setTimeout(()=>document.getElementById('dest').style.borderColor='',2000);return;}
-  if(!dur){document.getElementById('dur').style.borderColor='#dc2626';setTimeout(()=>document.getElementById('dur').style.borderColor='',2000);return;}
-  const btn=document.getElementById('gen-btn');
-  btn.disabled=true;
-  btn.innerHTML='<div class="dots"><span></span><span></span><span></span></div> Planning your adventure...';
-  const rc=document.getElementById('result-card');
-  rc.classList.add('show');
-  document.getElementById('result-title').textContent='';
-  document.getElementById('result-tagline').innerHTML='<div class="dots"><span></span><span></span><span></span></div>';
-  document.getElementById('result-badges').innerHTML='';
-  document.getElementById('result-days').innerHTML='';
-  document.getElementById('tip-box').style.display='none';
-  document.getElementById('visa-box').style.display='none';
-
-  const prompt=`You are PackdUp's AI trip planner. Built by an Irish backpacker who has visited every continent except Antarctica — heavy experience in Latin America, Asia, Australia, Europe and USA. Give honest, practical, backpacker-level advice. Include sport, culture and food angles where genuinely relevant.
-Trip: ${dest} | ${dur} | Budget: ${bud||'backpacker budget'} | Passport: ${pass||'Irish'} | Vibe: ${vibes||'culture, adventure, food'} | Notes: ${extra||'none'}
-Respond ONLY with valid JSON, no markdown, no backticks, no extra text before or after:
-{"title":"Short exciting title","tagline":"One punchy sentence","budget_per_day":"Realistic daily estimate","best_time":"Best months to visit","difficulty":"Easy/Moderate/Adventurous","days":[{"title":"Phase label","description":"2-3 practical sentences with real places, honest tips, cultural or sport notes"},{"title":"Phase label","description":"..."},{"title":"Final stretch","description":"..."}],"insider_tip":"One genuine tip most travel blogs miss","visa_note":"Practical visa info for the passport given including any WHV info"}`;
-
-  try{
-    const res=await fetch(CF_WORKER,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-opus-4-5',max_tokens:1000,messages:[{role:'user',content:prompt}]})
-    });
-    if(!res.ok){
-      const errData=await res.json().catch(()=>({}));
-      throw new Error(errData.error||`HTTP ${res.status}`);
-    }
-    const data=await res.json();
-    if(data.error){throw new Error(data.error);}
-    const txt=data.content.map(i=>i.text||'').join('');
-    const p=JSON.parse(txt.replace(/```json|```/g,'').trim());
-    document.getElementById('result-title').textContent=p.title;
-    document.getElementById('result-tagline').textContent=p.tagline;
-    document.getElementById('result-badges').innerHTML=[p.budget_per_day,p.best_time,p.difficulty].filter(Boolean).map(s=>`<span class="badge">${s}</span>`).join('');
-    document.getElementById('result-days').innerHTML=(p.days||[]).map(d=>`<div class="day-block"><div class="day-title">${d.title}</div><div class="day-desc">${d.description}</div></div>`).join('');
-    if(p.insider_tip){document.getElementById('tip-text').textContent=p.insider_tip;document.getElementById('tip-box').style.display='block';}
-    if(p.visa_note){document.getElementById('visa-text').textContent=p.visa_note;document.getElementById('visa-box').style.display='block';}
-  }catch(e){
-    document.getElementById('result-tagline').textContent='';
-    errBox.textContent='Error: '+e.message+'. Please try again.';
-    errBox.style.display='block';
+function toggleVibe(btn) {
+  btn.classList.toggle('active');
+  const vibe = btn.textContent.trim();
+  if (btn.classList.contains('active')) {
+    selectedVibes.push(vibe);
+  } else {
+    selectedVibes = selectedVibes.filter(v => v !== vibe);
   }
-  btn.disabled=false;
-  btn.innerHTML='✨ Generate my trip plan';
 }
 
-function submitFeedback(){
-  const btn=document.getElementById('fb-btn');
-  btn.textContent='Thanks for the feedback! 🙌';
-  btn.style.background='#0F6E56';
-  btn.disabled=true;
+// ============ MAPBOX ============
+let map;
+let routeBuilderMap;
+
+function initMap() {
+  mapboxgl.accessToken = MAPBOX_TOKEN;
+  map = new mapboxgl.Map({
+    container: 'packdup-map',
+    style: 'mapbox://styles/mapbox/outdoors-v12',
+    center: [10, 20],
+    zoom: 1.8,
+    projection: 'globe'
+  });
+
+  map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+  map.on('load', () => {
+    // Fog for globe effect
+    map.setFog({
+      'color': 'rgb(220, 235, 230)',
+      'high-color': 'rgb(180, 210, 200)',
+      'horizon-blend': 0.02,
+    });
+
+    // Highlight verified countries
+    map.addLayer({
+      id: 'verified-countries',
+      type: 'fill',
+      source: {type:'vector', url:'mapbox://mapbox.country-boundaries-v1'},
+      'source-layer': 'country_boundaries',
+      paint: {
+        'fill-color': [
+          'case',
+          ['in', ['get','iso_3166_1'], ['literal', VERIFIED_COUNTRIES]],
+          '#1D9E75',
+          ['in', ['get','iso_3166_1'], ['literal', ['JP','TH','VN','ID','KH','PH','MA','KE','TZ','ZA','NZ']]],
+          '#4A90D9',
+          'transparent'
+        ],
+        'fill-opacity': 0.5
+      }
+    });
+
+    // Hover highlight
+    map.addLayer({
+      id: 'country-hover',
+      type: 'fill',
+      source: {type:'vector', url:'mapbox://mapbox.country-boundaries-v1'},
+      'source-layer': 'country_boundaries',
+      paint: {'fill-color': '#E8B86D', 'fill-opacity': 0},
+    });
+
+    // Click handler
+    map.on('click', 'verified-countries', (e) => {
+      const props = e.features[0].properties;
+      const countryCode = props.iso_3166_1;
+      const country = COUNTRIES.find(c => c.code === countryCode);
+      if (country) openCountryPanel(country);
+    });
+
+    map.on('mousemove', 'verified-countries', (e) => {
+      map.getCanvas().style.cursor = 'pointer';
+      map.setPaintProperty('country-hover', 'fill-opacity', [
+        'case',
+        ['==', ['get','iso_3166_1'], e.features[0].properties.iso_3166_1],
+        0.3, 0
+      ]);
+    });
+
+    map.on('mouseleave', 'verified-countries', () => {
+      map.getCanvas().style.cursor = '';
+      map.setPaintProperty('country-hover', 'fill-opacity', 0);
+    });
+  });
 }
 
-buildRegionTabs();
-renderGrid(sportData,'sport-grid','sport-panel','sp-header','sp-vibes','sp-sections','sp-places','sp-plan-btn',null);
-currentCountries=regions['Latin America'].countries;
+function initRouteBuilder() {
+  if (routeBuilderMap) return;
+  setTimeout(() => {
+    mapboxgl.accessToken = MAPBOX_TOKEN;
+    routeBuilderMap = new mapboxgl.Map({
+      container: 'route-builder-map',
+      style: 'mapbox://styles/mapbox/outdoors-v12',
+      center: [10, 20],
+      zoom: 1.5
+    });
+    routeBuilderMap.on('click', (e) => {
+      new mapboxgl.Marker({color: '#1D9E75'})
+        .setLngLat(e.lngLat)
+        .addTo(routeBuilderMap);
+    });
+  }, 100);
+}
+
+// ============ COUNTRY PANEL ============
+function openCountryPanel(country) {
+  selectedCountry = country;
+  document.getElementById('panel-flag').textContent = country.flag;
+  document.getElementById('panel-country-name').textContent = country.name;
+  document.getElementById('panel-photo').style.backgroundImage = `url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&q=80&client_id=${UNSPLASH_KEY}')`;
+
+  const tier = country.tier === 'verified' ? '🟢 PackdUp Verified' : country.tier === 'researched' ? '🔵 PackdUp Researched' : '⚪ AI Generated';
+
+  document.getElementById('panel-facts').innerHTML = `
+    <div class="panel-fact"><div class="panel-fact-label">Daily budget</div><div class="panel-fact-value">${country.budget}</div></div>
+    <div class="panel-fact"><div class="panel-fact-label">Best time</div><div class="panel-fact-value">${country.best_time}</div></div>
+    <div class="panel-fact"><div class="panel-fact-label">Region</div><div class="panel-fact-value">${country.region.replace('-',' ')}</div></div>
+    <div class="panel-fact"><div class="panel-fact-label">Content</div><div class="panel-fact-value" style="font-size:12px">${tier}</div></div>
+  `;
+
+  document.getElementById('panel-verdict').innerHTML = `
+    <div class="panel-verdict-label">PackdUp Verdict</div>
+    <div class="panel-verdict-text">${country.verdict}</div>
+  `;
+
+  document.getElementById('country-panel').classList.add('open');
+}
+
+function closePanel() {
+  document.getElementById('country-panel').classList.remove('open');
+}
+
+function planToCountry() {
+  if (selectedCountry) {
+    document.getElementById('destination').value = selectedCountry.name;
+    showScreen('plan');
+    closePanel();
+  }
+}
+
+// ============ RENDER FUNCTIONS ============
+function renderRoutes(containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = ROUTES.map(r => `
+    <div class="route-card">
+      <div class="route-photo" style="background-image:url('${r.photo}')">
+        <div class="route-overlay"></div>
+        <div class="route-flags">${r.flags.slice(0,12)}</div>
+      </div>
+      <div class="route-body">
+        <div class="route-name">${r.name}</div>
+        <div class="route-desc">${r.desc}</div>
+        <div class="route-meta">
+          <div class="route-tag">⏱️ ${r.duration}</div>
+          <div class="route-tag">💰 ${r.budget}</div>
+          <div class="route-tag">${r.tier === 'verified' ? '🟢' : '🔵'} ${r.tier === 'verified' ? 'Verified' : 'Researched'}</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderCountries(region) {
+  const container = document.getElementById('countries-grid');
+  if (!container) return;
+  const filtered = region === 'all' ? COUNTRIES : COUNTRIES.filter(c => c.region === region);
+  container.innerHTML = filtered.map(c => `
+    <div class="country-card" onclick="openCountryPanel(${JSON.stringify(c).replace(/"/g,'&quot;')})">
+      <div class="country-photo" style="background-image:url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&q=70&sig=${c.code}')"></div>
+      <div class="country-overlay"></div>
+      <div class="tier-badge ${c.tier === 'verified' ? 'tier-verified' : c.tier === 'researched' ? 'tier-researched' : 'tier-ai'}"></div>
+      <div class="country-info">
+        <span class="country-flag">${c.flag}</span>
+        <div class="country-name">${c.name}</div>
+        <div class="country-budget">${c.budget}/day</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderBlog(containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = BLOG_POSTS.map(p => `
+    <div class="blog-card">
+      <div class="blog-photo" style="background-image:url('${p.photo}')">
+        <span class="blog-category">${p.category}</span>
+      </div>
+      <div class="blog-body">
+        <h3 class="blog-title">${p.title}</h3>
+        <p class="blog-excerpt">${p.excerpt}</p>
+        <div class="blog-meta">
+          <span class="blog-flag">${p.flag} ${p.country}</span>
+          <span class="blog-read-time">${p.read_time} read</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderTools() {
+  const container = document.getElementById('tools-grid');
+  if (!container) return;
+  container.innerHTML = TOOLS_DATA.map(t => `
+    <div class="tool-card" onclick="showScreen('${t.action}')">
+      <div class="tool-icon">${t.icon}</div>
+      <div class="tool-name">${t.name}</div>
+      <div class="tool-desc">${t.desc}</div>
+      ${t.badge ? `<span class="tool-badge">${t.badge}</span>` : ''}
+    </div>
+  `).join('');
+}
+
+function filterRegion(region, btn) {
+  document.querySelectorAll('.region-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCountries(region);
+}
+
+// ============ AI TRIP PLANNER ============
+async function generateTrip() {
+  const destination = document.getElementById('destination').value.trim();
+  if (!destination) {
+    alert('Please enter a destination first');
+    return;
+  }
+
+  const duration = document.getElementById('duration').value;
+  const budget = document.getElementById('budget').value;
+  const group = document.getElementById('group').value;
+  const passport = document.getElementById('passport').value;
+  const experience = document.getElementById('experience').value;
+  const extra = document.getElementById('extra-context').value.trim();
+  const vibes = selectedVibes.length ? selectedVibes.join(', ') : 'general backpacking';
+
+  document.getElementById('generate-btn').disabled = true;
+  document.getElementById('planner-loading').style.display = 'block';
+  document.getElementById('result-card').style.display = 'none';
+
+  const prompt = `You are PackdUp, an expert backpacker travel planner built on real firsthand experience across 37 countries. Create a detailed, practical and honest trip plan.
+
+Destination: ${destination}
+Duration: ${duration}
+Budget: ${budget}
+Travelling: ${group}
+Passport: ${passport}
+Experience level: ${experience}
+Travel vibe: ${vibes}
+${extra ? `Extra context: ${extra}` : ''}
+
+Write a comprehensive day-by-day itinerary with:
+- Specific accommodation recommendations with realistic prices
+- Real local food recommendations with prices
+- Honest transport advice between places
+- Specific activities with costs
+- Practical tips only someone who's been there would know
+- Visa info for ${passport} passport
+- Budget breakdown for the full trip
+- Safety notes where relevant
+- Best time of year context
+
+Be specific, honest and genuinely useful. Mention real places, real prices. No generic tourist brochure content.`;
+
+  try {
+    const response = await fetch(CF_WORKER, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        model: 'claude-opus-4-5',
+        max_tokens: 4000,
+        messages: [{role: 'user', content: prompt}]
+      })
+    });
+
+    const data = await response.json();
+    const text = data.content?.[0]?.text || 'Sorry, could not generate a trip plan. Please try again.';
+
+    document.getElementById('result-flag').textContent = getCountryFlag(destination);
+    document.getElementById('result-title').textContent = destination + ' — Your Trip Plan';
+    document.getElementById('result-body').textContent = text;
+    document.getElementById('result-card').style.display = 'block';
+  } catch(e) {
+    document.getElementById('result-body').textContent = 'Something went wrong. Please try again.';
+    document.getElementById('result-card').style.display = 'block';
+  }
+
+  document.getElementById('generate-btn').disabled = false;
+  document.getElementById('planner-loading').style.display = 'none';
+}
+
+async function findDestination() {
+  const time = document.getElementById('df-time').value;
+  const budget = document.getElementById('df-budget').value;
+  const climate = document.getElementById('df-climate').value;
+  const region = document.getElementById('df-region').value;
+  const interests = document.getElementById('df-interests').value;
+
+  document.getElementById('planner-loading').style.display = 'block';
+
+  const prompt = `You are PackdUp's destination finder. Based on these preferences, recommend 3 perfect destinations with honest explanations.
+
+Time available: ${time}
+Budget: ${budget}
+Climate preference: ${climate}
+Region preference: ${region}
+Interests: ${interests || 'general backpacking'}
+
+For each destination give:
+1. Why it's perfect for these preferences
+2. Realistic daily budget breakdown
+3. Best time to visit
+4. One honest warning
+5. The one thing that makes it unmissable
+
+Be specific and genuinely useful. Real prices, real advice.`;
+
+  try {
+    const response = await fetch(CF_WORKER, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        model: 'claude-opus-4-5',
+        max_tokens: 2000,
+        messages: [{role: 'user', content: prompt}]
+      })
+    });
+
+    const data = await response.json();
+    const text = data.content?.[0]?.text || 'Could not find destinations. Please try again.';
+
+    document.getElementById('result-flag').textContent = '🌍';
+    document.getElementById('result-title').textContent = 'Your Perfect Destinations';
+    document.getElementById('result-body').textContent = text;
+    document.getElementById('result-card').style.display = 'block';
+  } catch(e) {
+    console.error(e);
+  }
+
+  document.getElementById('planner-loading').style.display = 'none';
+}
+
+function getCountryFlag(destination) {
+  const flagMap = {
+    'colombia': '🇨🇴', 'peru': '🇵🇪', 'bolivia': '🇧🇴', 'argentina': '🇦🇷',
+    'brazil': '🇧🇷', 'chile': '🇨🇱', 'ecuador': '🇪🇨', 'mexico': '🇲🇽',
+    'guatemala': '🇬🇹', 'belize': '🇧🇿', 'el salvador': '🇸🇻', 'nicaragua': '🇳🇮',
+    'panama': '🇵🇦', 'nepal': '🇳🇵', 'china': '🇨🇳', 'japan': '🇯🇵',
+    'thailand': '🇹🇭', 'vietnam': '🇻🇳', 'indonesia': '🇮🇩', 'india': '🇮🇳',
+    'morocco': '🇲🇦', 'jordan': '🇯🇴', 'ireland': '🇮🇪', 'australia': '🇦🇺',
+    'new zealand': '🇳🇿', 'kenya': '🇰🇪', 'south africa': '🇿🇦', 'portugal': '🇵🇹',
+    'spain': '🇪🇸', 'france': '🇫🇷', 'italy': '🇮🇹', 'germany': '🇩🇪',
+    'greece': '🇬🇷', 'croatia': '🇭🇷', 'canada': '🇨🇦', 'philippines': '🇵🇭',
+  };
+  const key = destination.toLowerCase();
+  for (const [name, flag] of Object.entries(flagMap)) {
+    if (key.includes(name)) return flag;
+  }
+  return '🌍';
+}
+
+function copyResult() {
+  const text = document.getElementById('result-body').textContent;
+  navigator.clipboard.writeText(text);
+  alert('Trip plan copied to clipboard!');
+}
+
+function saveResult() {
+  const title = document.getElementById('result-title').textContent;
+  const text = document.getElementById('result-body').textContent;
+  const saved = JSON.parse(localStorage.getItem('packdup-saved') || '[]');
+  saved.push({title, text, date: new Date().toISOString()});
+  localStorage.setItem('packdup-saved', JSON.stringify(saved));
+  alert('Trip plan saved! Access it anytime in your saved trips.');
+}
+
+// ============ EMAIL SIGNUP ============
+function submitEmail(e) {
+  e.preventDefault();
+  const email = document.getElementById('email-input').value;
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = MAILCHIMP_URL;
+  form.target = '_blank';
+  const emailInput = document.createElement('input');
+  emailInput.type = 'email';
+  emailInput.name = 'EMAIL';
+  emailInput.value = email;
+  form.appendChild(emailInput);
+  document.body.appendChild(form);
+  form.submit();
+  document.body.removeChild(form);
+  document.getElementById('email-input').value = '';
+  alert('Thanks for subscribing! Check your inbox for a confirmation email.');
+}
+
+// ============ INIT ============
+document.addEventListener('DOMContentLoaded', () => {
+  // Render home content
+  renderRoutes('home-routes');
+  renderBlog('home-blog');
+
+  // Init map
+  initMap();
+
+  // Load logos
+  loadLogos();
+});
+
+function loadLogos() {
+  // Logos are embedded as files — reference them
+  const horizontalSrc = 'PackdUp_Horizontal_Logo.png';
+  document.querySelectorAll('img[src="PackdUp_Horizontal_Logo.png"]').forEach(img => {
+    img.src = horizontalSrc;
+    img.onerror = () => { img.style.display = 'none'; };
+  });
+  document.querySelectorAll('img[src="barry-photo.jpg"]').forEach(img => {
+    img.src = 'barry-photo.jpg';
+    img.onerror = () => { img.style.display = 'none'; };
+  });
+}
+
 </script>
+
 </body>
 </html>
