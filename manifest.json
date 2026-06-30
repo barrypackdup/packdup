@@ -1,0 +1,15 @@
+{
+  "name": "PackdUp — The Home of Backpacker Travel",
+  "short_name": "PackdUp",
+  "description": "AI-powered backpacker travel planning, built on real firsthand experience across 37 countries.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0F3D2E",
+  "theme_color": "#1D9E75",
+  "orientation": "portrait-primary",
+  "categories": ["travel", "lifestyle", "navigation"],
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
