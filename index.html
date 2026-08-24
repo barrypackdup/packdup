@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -493,11 +494,6 @@ footer{background:#0D1813;color:rgba(255,255,255,.55);padding:60px 28px 28px}
 <div class="tier-item"><div class="tier-dot" style="background:#4A8FD9"></div>PackdUp Researched &mdash; thoroughly researched</div>
 <div class="tier-item"><div class="tier-dot" style="background:#9BA8A3"></div>AI Generated &mdash; starting point</div>
 </div>
-<div class="palestine-note">
-<div style="font-size:24px;margin-bottom:8px">&#127477;&#127480;</div>
-<div style="font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px">Palestine &mdash; A destination PackdUp covers in full</div>
-<div style="font-size:13px;color:var(--text-2);line-height:1.6">PackdUp features Palestine as a travel destination &mdash; covering its history, culture, food and people. We acknowledge Israel exists but do not feature it as a recommended destination. Our support is with the people of Palestine.</div>
-</div>
 <div class="region-filters">
 <button class="region-btn active" onclick="filterRegion('all',this)">&#127757; All</button>
 <button class="region-btn" onclick="filterRegion('latin-america',this)">&#127758; Latin America</button>
@@ -671,6 +667,17 @@ const CF_WORKER='https://frosty-bread-e36d.barryamotherway.workers.dev';
 const MAILCHIMP_URL='https://packdup.us4.list-manage.com/subscribe/post?u=3bc3ec3868e22f4e4a7b1b745&id=f84d74e007&f_id=0033d1eaf0';
 const VERIFIED=['IE','CA','MX','BZ','GT','SV','NI','PA','CO','EC','PE','BO','CL','AR','BR','NP','CN','HK','MO','IN','JO','AU','MA'];
 const RESEARCHED=['JP','TH','VN','ID','KH','PH','KE','TZ','ZA','NZ','IS','NO','RW','UG','ET','NA','BW','ZW','ZM','GE','AM','AZ','PK'];
+
+// Real places with real coordinates — starts with Jordan (fullest city data so far).
+// Pattern is ready to extend to other Verified countries as their city lists get confirmed.
+const PLACES={
+  JO:[
+    {name:'Amman', lng:35.9284, lat:31.9454},
+    {name:'Petra', lng:35.4444, lat:30.3285},
+    {name:'Wadi Rum', lng:35.4173, lat:29.5324},
+    {name:'Dead Sea', lng:35.5822, lat:31.7495},
+  ],
+};
 
 const HERO_CAPTIONS=['Nepal, Himalayas','Machu Picchu, Peru','Rio de Janeiro, Brazil','Namibia, Africa','Tokyo, Japan','Dubrovnik, Croatia','Thailand, Southeast Asia','Iceland','Uzbekistan, Central Asia'];
 let currentSlide=0;
@@ -884,10 +891,10 @@ function toggleVibe(btn){
 let map;
 function initMap(){
   mapboxgl.accessToken=MAPBOX_TOKEN;
-  map=new mapboxgl.Map({container:'packdup-map',style:'mapbox://styles/mapbox/outdoors-v12',center:[10,20],zoom:1.8,projection:'globe'});
+  map=new mapboxgl.Map({container:'packdup-map',style:'mapbox://styles/mapbox/satellite-v9',center:[10,20],zoom:1.8,projection:'globe'});
   map.addControl(new mapboxgl.NavigationControl(),'top-right');
   map.on('load',()=>{
-    map.setFog({'color':'rgb(215,230,220)','high-color':'rgb(180,210,200)','horizon-blend':0.02});
+    map.setFog({'color':'rgb(30,45,60)','high-color':'rgb(14,20,30)','horizon-blend':0.035});
     map.addLayer({id:'vfill',type:'fill',source:{type:'vector',url:'mapbox://mapbox.country-boundaries-v1'},'source-layer':'country_boundaries',paint:{'fill-color':['case',['in',['get','iso_3166_1'],['literal',VERIFIED]],'#1D9E75',['in',['get','iso_3166_1'],['literal',RESEARCHED]],'#4A8FD9','transparent'],'fill-opacity':0.55}});
     map.addLayer({id:'chover',type:'fill',source:{type:'vector',url:'mapbox://mapbox.country-boundaries-v1'},'source-layer':'country_boundaries',paint:{'fill-color':'#E8A84D','fill-opacity':0}});
     map.on('click','vfill',e=>{
@@ -900,6 +907,35 @@ function initMap(){
       map.setPaintProperty('chover','fill-opacity',['case',['==',['get','iso_3166_1'],e.features[0].properties.iso_3166_1],0.35,0]);
     });
     map.on('mouseleave','vfill',()=>{map.getCanvas().style.cursor='';map.setPaintProperty('chover','fill-opacity',0);});
+
+    // Place pins — real city coordinates, only appear once zoomed into a country (zoom 4+)
+    const placesGeoJSON={
+      type:'FeatureCollection',
+      features:Object.entries(PLACES).flatMap(([code,pts])=>pts.map(p=>({
+        type:'Feature',
+        properties:{name:p.name, country:code},
+        geometry:{type:'Point', coordinates:[p.lng, p.lat]}
+      })))
+    };
+    map.addSource('places',{type:'geojson', data:placesGeoJSON});
+    map.addLayer({
+      id:'place-pins', type:'circle', source:'places', minzoom:4,
+      paint:{'circle-radius':5,'circle-color':'#ffffff','circle-stroke-width':2,'circle-stroke-color':'#1D9E75'}
+    });
+    map.addLayer({
+      id:'place-labels', type:'symbol', source:'places', minzoom:4,
+      layout:{'text-field':['get','name'],'text-size':12,'text-offset':[0,1.3],'text-anchor':'top'},
+      paint:{'text-color':'#ffffff','text-halo-color':'rgba(6,10,16,0.85)','text-halo-width':1.4}
+    });
+    map.on('click','place-pins', e=>{
+      const p=e.features[0].properties;
+      new mapboxgl.Popup({closeButton:true})
+        .setLngLat(e.features[0].geometry.coordinates)
+        .setHTML(`<strong>${p.name}</strong>`)
+        .addTo(map);
+    });
+    map.on('mouseenter','place-pins', ()=>{map.getCanvas().style.cursor='pointer';});
+    map.on('mouseleave','place-pins', ()=>{map.getCanvas().style.cursor='';});
   });
 }
 
@@ -1059,7 +1095,7 @@ async function runTool(id){
   try{
     const prompt=getToolPrompt(id);
     const r=await fetch(CF_WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-opus-4-5',max_tokens:3000,
+      body:JSON.stringify({model:'claude-sonnet-5',max_tokens:3000,
         messages:[{role:'user',content:`You are PackdUp — expert backpacker travel platform built on real firsthand experience. ${prompt}\n\nFormat with clear sections. Be specific and genuinely useful. End with a clear PackdUp Verdict.`}]})});
     const data=await r.json();
     const text=data.content?.[0]?.text||'Could not generate. Please try again.';
@@ -1087,7 +1123,7 @@ async function generateTrip(){
   document.getElementById('result-card').style.display='none';
   try{
     const r=await fetch(CF_WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-opus-4-5',max_tokens:4000,messages:[{role:'user',content:`You are PackdUp — expert backpacker travel planner built on real firsthand experience across 37 countries. Create a genuinely useful, specific and honest trip plan.\n\nDestination: ${dest}\nDuration: ${dur}\nBudget: ${bud}\nTravelling: ${grp}\nPassport: ${pass}\nExperience: ${exp}\nTravel vibe: ${vibes}\n${extra?'Extra context: '+extra:''}\n\nWrite a comprehensive trip plan with:\n- Day-by-day or week-by-week itinerary with specific places\n- Specific accommodation recommendations with real prices\n- Real local food recommendations with dish names and costs\n- Specific transport routes with costs\n- Must-do activities with entry fees\n- Visa info for ${pass} passport\n- Full budget breakdown for the trip\n- 5 practical tips only someone who has been there would know\n- One honest warning about something people get wrong\n\nBe specific. Real place names, real prices, real advice. No generic tourist brochure content.`}]})});
+      body:JSON.stringify({model:'claude-sonnet-5',max_tokens:4000,messages:[{role:'user',content:`You are PackdUp — expert backpacker travel planner built on real firsthand experience across 37 countries. Create a genuinely useful, specific and honest trip plan.\n\nDestination: ${dest}\nDuration: ${dur}\nBudget: ${bud}\nTravelling: ${grp}\nPassport: ${pass}\nExperience: ${exp}\nTravel vibe: ${vibes}\n${extra?'Extra context: '+extra:''}\n\nWrite a comprehensive trip plan with:\n- Day-by-day or week-by-week itinerary with specific places\n- Specific accommodation recommendations with real prices\n- Real local food recommendations with dish names and costs\n- Specific transport routes with costs\n- Must-do activities with entry fees\n- Visa info for ${pass} passport\n- Full budget breakdown for the trip\n- 5 practical tips only someone who has been there would know\n- One honest warning about something people get wrong\n\nBe specific. Real place names, real prices, real advice. No generic tourist brochure content.`}]})});
     const data=await r.json();
     const text=data.content?.[0]?.text||'Could not generate. Please try again.';
     document.getElementById('result-flag').textContent=getFlag(dest);
@@ -1110,7 +1146,7 @@ async function findDestination(){
   document.getElementById('result-card').style.display='none';
   try{
     const r=await fetch(CF_WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-opus-4-5',max_tokens:2000,messages:[{role:'user',content:`You are PackdUp. Recommend 3 perfect backpacker destinations for: ${time} available, ${bud} budget, ${climate} climate, ${region}, loves: ${int||'general travel'}. For each: why it fits perfectly, daily budget, best month to visit, one unmissable thing, one honest warning. Make genuine non-obvious recommendations.`}]})});
+      body:JSON.stringify({model:'claude-sonnet-5',max_tokens:2000,messages:[{role:'user',content:`You are PackdUp. Recommend 3 perfect backpacker destinations for: ${time} available, ${bud} budget, ${climate} climate, ${region}, loves: ${int||'general travel'}. For each: why it fits perfectly, daily budget, best month to visit, one unmissable thing, one honest warning. Make genuine non-obvious recommendations.`}]})});
     const data=await r.json();
     const text=data.content?.[0]?.text||'Could not find destinations.';
     document.getElementById('result-flag').textContent='🌍';
@@ -1133,7 +1169,7 @@ async function compareDestinations(){
   document.getElementById('result-card').style.display='none';
   try{
     const r=await fetch(CF_WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-opus-4-5',max_tokens:2500,messages:[{role:'user',content:`You are PackdUp. Create honest comparison between ${c1} and ${c2} for ${dur} ${bud} backpacker. They care about: ${ctx||'overall experience'}. Compare: daily budget, food quality, activities, safety, transport ease, English spoken, backpacker scene, best season, wow factor. PackdUp Verdict on which wins overall AND who each suits best. Be honest — don't say both are great.`}]})});
+      body:JSON.stringify({model:'claude-sonnet-5',max_tokens:2500,messages:[{role:'user',content:`You are PackdUp. Create honest comparison between ${c1} and ${c2} for ${dur} ${bud} backpacker. They care about: ${ctx||'overall experience'}. Compare: daily budget, food quality, activities, safety, transport ease, English spoken, backpacker scene, best season, wow factor. PackdUp Verdict on which wins overall AND who each suits best. Be honest — don't say both are great.`}]})});
     const data=await r.json();
     const text=data.content?.[0]?.text||'Could not compare.';
     document.getElementById('result-flag').textContent='🔄';
