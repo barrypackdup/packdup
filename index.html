@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,7 +24,7 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);lin
 .navbar{position:sticky;top:0;z-index:1000;background:rgba(250,250,248,.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
 .nav-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:68px;padding:0 28px}
 .nav-logo{display:flex;align-items:center;text-decoration:none}
-.nav-logo img{height:34px;object-fit:contain}
+.nav-logo img{height:52px;object-fit:contain}
 .nav-logo-fb{font-family:"Playfair Display",serif;font-size:22px;font-weight:700;color:var(--green);letter-spacing:-.5px}
 .nav-links{display:flex;gap:4px;list-style:none;align-items:center}
 .nav-links a{text-decoration:none;color:var(--text-2);font-size:14px;font-weight:500;padding:8px 14px;border-radius:10px;transition:all .18s;font-family:"Space Grotesk",sans-serif}
@@ -234,7 +233,7 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);lin
 footer{background:#0D1813;color:rgba(255,255,255,.55);padding:60px 28px 28px}
 .footer-inner{max-width:1280px;margin:0 auto}
 .footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px}
-.footer-brand-logo img{height:28px;margin-bottom:18px;opacity:.7}
+.footer-brand-logo img{height:42px;margin-bottom:18px;opacity:.85}
 .footer-brand-logo-fb{font-family:"Playfair Display",serif;font-size:20px;font-weight:700;color:rgba(255,255,255,.7);margin-bottom:18px;display:block}
 .footer-brand p{font-size:13px;line-height:1.7;max-width:260px}
 .footer-col h4{color:white;font-size:12px;font-weight:700;font-family:"Space Grotesk",sans-serif;letter-spacing:1px;text-transform:uppercase;margin-bottom:18px}
@@ -839,7 +838,6 @@ const TOOLS_DATA=[
 {id:'destination',icon:'🎯',name:'Destination Finder',desc:'Not sure where to go? 5 questions and we find your perfect destination.',badge:null},
 {id:'gaa',icon:'☘️',name:'GAA Clubs Worldwide',desc:'Find your local GAA club in any city in the world.',badge:'Irish exclusive',badgeAmber:true},
 {id:'food',icon:'🌶️',name:'Local Food Bible',desc:'What to eat, what to order, what to avoid. Real local knowledge.',badge:null},
-{id:'scams',icon:'⚠️',name:'Scam Encyclopedia',desc:'Every major tourist scam by country. Know before you go.',badge:null},
 {id:'altitude',icon:'🏔️',name:'Altitude Checker',desc:'Full risk assessment and acclimatisation plan for any trekking route.',badge:'For trekkers',badgeAmber:false},
 ];
 
@@ -847,15 +845,76 @@ const TOOL_PROMPTS={
 budget:(d,dur,style)=>`Create a detailed daily budget breakdown for backpacking ${d} for ${dur} on a ${style} budget. Break down by: accommodation (with specific hostel/guesthouse names and prices), food (with specific dishes and costs), transport (with specific routes and costs), activities (with entry fees). Give a total trip cost. Include money-saving tips specific to this destination, ATM fee warnings, and currency info. End with a PackdUp Verdict on value for money.`,
 packing:(d,dur,act)=>`Create a comprehensive packing list for ${dur} backpacking in ${d} focused on ${act}. Organise by: Documents, Electronics, Clothing (specific quantities), Toiletries, Medical/Safety, Gear. For each major item give a specific recommendation and why. Include a WHAT NOT TO BRING section and weight-saving tips. End with a PackdUp Verdict on the essential items.`,
 visa:(pass,dest)=>`Detailed visa info for ${pass} passport holder going to ${dest}: visa type (free/on arrival/e-visa/embassy), exact cost in euros, how to apply with links, processing time, length of stay, extension options, onward ticket requirement, health requirements. Common mistakes people make. End with PackdUp Verdict.`,
-weather:(dest,month)=>`Weather and best time guide for ${dest}. Person considering ${month}. Month by month breakdown using Great/Good/Avoid ratings. Cover temperature, rainfall, crowds, prices. Clear recommendation on best months and why. Festivals worth timing around. Regional weather variations. End with PackdUp Verdict.`,
+weather:(dest,month)=>`Weather and best time to visit guide for ${dest}. ${month && month!=='Not sure — show me the best time' ? `The person is specifically considering ${month} — address that directly first.` : 'Lead with a clear, direct answer to "when is the best time to visit" before anything else.'} Then give a full month-by-month breakdown using Great/Good/Avoid ratings. Cover temperature, rainfall, crowds, prices. Festivals worth timing around. Regional weather variations if relevant. End with a clear PackdUp Verdict naming the single best window to go.`,
 compare:(c1,c2,bud,what)=>`Honest comparison between ${c1} and ${c2} for a ${bud} backpacker. They care about: ${what}. Compare: daily budget, food quality, things to do, safety, transport ease, English spoken, backpacker scene, best season, wow factor. Give PackdUp Verdict on which wins overall AND who each suits best. Be honest — don't say both are great.`,
 safety:(dest)=>`Honest practical safety assessment for backpackers in ${dest}. Not sanitised government advice — real advice. Cover: overall safety rating, genuinely dangerous areas/situations, overstated risks that aren't actually problems, common scams, transport safety, solo travel safety for women, health risks, what to do if something goes wrong. Be direct.`,
 destination:(time,bud,climate,region,int)=>`Recommend 3 perfect backpacker destinations for: ${time} available, ${bud} budget, ${climate} climate, ${region}, loves: ${int}. For each: why it fits, daily budget, best month, one unmissable thing, one honest warning. Make genuine non-obvious recommendations.`,
 gaa:(dest)=>`List all GAA clubs in or near ${dest}. For each: club name, county affiliation, sports played, area of city, how to contact them. Include Irish pubs showing GAA matches and Irish community groups. Be honest if you don't have specific info — don't invent details.`,
 food:(dest)=>`Comprehensive local food guide for ${dest}. 10 must-eat dishes with honest descriptions. How to order them locally. Where to find best versions. What things cost. Tourist trap dishes to avoid. Food safety considerations. Local drinks. The one dish that defines the cuisine. End with PackdUp Verdict.`,
-scams:(dest)=>`Every significant tourist scam in ${dest}. For each: name, exactly how it works step by step, warning signs to spot it early, how to avoid or exit it. Cover transport, accommodation, attraction, food, money exchange scams. Be specific — this genuinely protects travellers.`,
 altitude:(dest,fit)=>`Comprehensive altitude sickness guide for ${dest} for someone who is ${fit}. Maximum altitudes involved, risk points, day-by-day acclimatisation plan, Diamox info (dosage, side effects, whether to use), when to descend as emergency, what NOT to do, intermediate altitude stops. Be medically accurate.`,
 };
+
+// ---- Markdown rendering helpers (fixes garbled PDFs + literal ##/** showing on screen) ----
+let lastResultText='';
+let lastToolResultText='';
+
+function markdownToHTML(raw){
+  const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return raw.split('\n').map(rawLine=>{
+    const trimmed=rawLine.trim();
+    if(trimmed==='') return '<div style="height:8px"></div>';
+    let l=esc(trimmed).replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+    if(/^###\s/.test(trimmed)) return `<div style="font-weight:700;font-size:14.5px;margin:14px 0 6px">${l.replace(/^###\s*/,'')}</div>`;
+    if(/^##\s/.test(trimmed))  return `<div style="font-weight:700;font-size:16px;margin:18px 0 8px;color:var(--green)">${l.replace(/^##\s*/,'')}</div>`;
+    if(/^#\s/.test(trimmed))   return `<div style="font-weight:800;font-size:18px;margin:20px 0 10px">${l.replace(/^#\s*/,'')}</div>`;
+    if(/^[-*]\s/.test(trimmed)) return `<div style="margin:0 0 4px 4px">• ${l.replace(/^[-*]\s*/,'')}</div>`;
+    return `<div style="margin:0 0 8px">${l}</div>`;
+  }).join('');
+}
+
+function cleanForPDF(text){
+  return text
+    .replace(/[\u{1F300}-\u{1FAFF}]/gu,'')
+    .replace(/[\u{2600}-\u{27BF}]/gu,'')
+    .replace(/[–—]/g,'-')
+    .replace(/[''‛]/g,"'")
+    .replace(/[""]/g,'"')
+    .replace(/…/g,'...')
+    .replace(/€/g,'EUR ')
+    .replace(/£/g,'GBP ')
+    .replace(/→/g,'->')
+    .replace(/[ \t]+/g,' ');
+}
+
+function renderMarkdownToPDF(doc, text, startY){
+  const cleaned=cleanForPDF(text);
+  const lines=cleaned.split('\n');
+  let y=startY;
+  const marginLeft=15, maxWidth=180, pageBottom=278;
+  lines.forEach(rawLine=>{
+    const trimmed=rawLine.trim();
+    if(trimmed===''){ y+=4; return; }
+    if(y>pageBottom){ doc.addPage(); y=20; }
+    if(/^#{1,3}\s/.test(trimmed)){
+      const headerText=trimmed.replace(/^#{1,3}\s*/,'').replace(/\*\*/g,'');
+      doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(21,117,79);
+      const wrapped=doc.splitTextToSize(headerText,maxWidth);
+      doc.text(wrapped,marginLeft,y); y+=wrapped.length*6+3;
+      doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(74,99,88);
+      return;
+    }
+    if(/^[-*]\s/.test(trimmed)){
+      const bulletText=trimmed.replace(/^[-*]\s*/,'').replace(/\*\*/g,'');
+      const wrapped=doc.splitTextToSize('•  '+bulletText,maxWidth-5);
+      doc.text(wrapped,marginLeft+3,y); y+=wrapped.length*5.5;
+      return;
+    }
+    const plain=rawLine.replace(/\*\*/g,'').replace(/\*/g,'');
+    const wrapped=doc.splitTextToSize(plain,maxWidth);
+    doc.text(wrapped,marginLeft,y); y+=wrapped.length*5.5;
+  });
+  return y;
+}
 
 let selectedVibes=[];
 let selectedCountry=null;
@@ -1054,17 +1113,27 @@ function getToolForm(id){
     budget:`<div class="form-group"><label class="form-label">Destination</label><input type="text" class="form-input" id="tf1" placeholder="Bolivia, Thailand, Morocco..."></div><div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px;margin-top:12px"><div class="form-group"><label class="form-label">Duration</label><select class="form-select" id="tf2"><option>1 week</option><option selected>2 weeks</option><option>1 month</option></select></div><div class="form-group"><label class="form-label">Style</label><select class="form-select" id="tf3"><option>Shoestring</option><option selected>Backpacker</option><option>Comfort</option></select></div></div>`,
     packing:`<div class="form-group"><label class="form-label">Destination</label><input type="text" class="form-input" id="tf1" placeholder="Southeast Asia, Nepal, Patagonia..."></div><div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px;margin-top:12px"><div class="form-group"><label class="form-label">Duration</label><select class="form-select" id="tf2"><option>Under 2 weeks</option><option selected>2-4 weeks</option><option>1-3 months</option><option>6+ months</option></select></div><div class="form-group"><label class="form-label">Activities</label><select class="form-select" id="tf3"><option>General backpacking</option><option>Trekking/hiking</option><option>Beach and islands</option><option>City travel</option></select></div></div>`,
     visa:`<div class="form-group"><label class="form-label">Your Passport</label><select class="form-select" id="tf1"><option>Irish</option><option>British</option><option>American</option><option>Australian</option><option>Canadian</option><option>EU</option></select></div><div class="form-group" style="margin-top:12px"><label class="form-label">Destination</label><input type="text" class="form-input" id="tf2" placeholder="Bolivia, Japan, India..."></div>`,
-    weather:`<div class="form-group"><label class="form-label">Destination</label><input type="text" class="form-input" id="tf1" placeholder="Morocco, Indonesia, Peru..."></div><div class="form-group" style="margin-top:12px"><label class="form-label">Month considering</label><select class="form-select" id="tf2"><option>January</option><option>February</option><option>March</option><option>April</option><option>May</option><option>June</option><option>July</option><option>August</option><option>September</option><option>October</option><option>November</option><option>December</option></select></div>`,
+    weather:`<div class="form-group"><label class="form-label">Destination</label><input type="text" class="form-input" id="tf1" placeholder="Morocco, Indonesia, Peru..."></div><div class="form-group" style="margin-top:12px"><label class="form-label">Specific month? (optional)</label><select class="form-select" id="tf2"><option selected>Not sure — show me the best time</option><option>January</option><option>February</option><option>March</option><option>April</option><option>May</option><option>June</option><option>July</option><option>August</option><option>September</option><option>October</option><option>November</option><option>December</option></select></div>`,
     compare:`<div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px"><div class="form-group"><label class="form-label">Destination 1</label><input type="text" class="form-input" id="tf1" placeholder="Colombia"></div><div class="form-group"><label class="form-label">Destination 2</label><input type="text" class="form-input" id="tf2" placeholder="Peru"></div></div><div class="form-group" style="margin-top:12px"><label class="form-label">Budget</label><select class="form-select" id="tf3"><option>Shoestring</option><option selected>Backpacker</option><option>Comfort</option></select></div><div class="form-group" style="margin-top:12px"><label class="form-label">What matters most?</label><input type="text" class="form-input" id="tf4" placeholder="Budget, food, adventures, safety..."></div>`,
     safety:`<div class="form-group"><label class="form-label">Destination</label><input type="text" class="form-input" id="tf1" placeholder="Colombia, Morocco, Egypt..."></div>`,
     destination:`<div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px"><div class="form-group"><label class="form-label">Time available</label><select class="form-select" id="tf1"><option>1 week</option><option selected>2 weeks</option><option>1 month</option><option>3+ months</option></select></div><div class="form-group"><label class="form-label">Budget</label><select class="form-select" id="tf2"><option>Ultra budget</option><option selected>Budget</option><option>Mid-range</option></select></div><div class="form-group"><label class="form-label">Climate</label><select class="form-select" id="tf3"><option>Hot and tropical</option><option>Warm Mediterranean</option><option>Cool and dramatic</option><option>No preference</option></select></div><div class="form-group"><label class="form-label">Region</label><select class="form-select" id="tf4"><option>Anywhere</option><option>Southeast Asia</option><option>Latin America</option><option>Europe</option><option>Africa</option><option>Middle East</option></select></div></div><div class="form-group" style="margin-top:12px"><label class="form-label">What do you love?</label><textarea class="form-textarea" style="min-height:60px" id="tf5" placeholder="Adventure, food, history, beaches..."></textarea></div>`,
     gaa:`<div class="form-group"><label class="form-label">City or Country</label><input type="text" class="form-input" id="tf1" placeholder="Sydney, London, Buenos Aires, Toronto..."></div>`,
     food:`<div class="form-group"><label class="form-label">Destination</label><input type="text" class="form-input" id="tf1" placeholder="Peru, Japan, Morocco..."></div>`,
-    scams:`<div class="form-group"><label class="form-label">Destination</label><input type="text" class="form-input" id="tf1" placeholder="Bangkok, Barcelona, Cairo..."></div>`,
     altitude:`<div class="form-group"><label class="form-label">Destination or trek</label><input type="text" class="form-input" id="tf1" placeholder="EBC Trek, Bolivia, Ladakh, Cusco..."></div><div class="form-group" style="margin-top:12px"><label class="form-label">Fitness level</label><select class="form-select" id="tf2"><option>Not very fit</option><option selected>Reasonably fit</option><option>Very fit</option><option>Athlete</option></select></div>`,
   };
   const form=forms[id]||'<p>Tool form</p>';
   return `${form}<div style="margin-top:20px"><button class="generate-btn" onclick="runTool('${id}')" id="tool-run-btn">🤖 Generate ${TOOLS_DATA.find(t=>t.id===id)?.name||'Tool'}</button></div><div class="loading-state" id="tool-loading"><div class="loading-spinner"></div><div class="loading-text">Generating...</div></div><div class="tool-result" id="tool-result"></div>`;
+}
+
+function getVerifiedContext(destText){
+  if(!destText) return '';
+  const key=destText.toLowerCase().trim();
+  const match=COUNTRIES.find(c=>c.tier==='verified' && (key.includes(c.name.toLowerCase())||c.name.toLowerCase().includes(key)));
+  if(!match) return '';
+  let ctx=`\n\nREAL VERIFIED CONTEXT — Barry has actually been to ${match.name}. Ground your answer in this and do not contradict it:\nPackdUp Verdict: "${match.verdict}"`;
+  if(match.tip) ctx+=`\nInsider tip: "${match.tip}"`;
+  ctx+=`\nDaily budget range Barry actually found: ${match.budget}. Best time Barry recommends: ${match.best}.`;
+  return ctx;
 }
 
 function getToolPrompt(id){
@@ -1079,10 +1148,12 @@ function getToolPrompt(id){
     destination:TOOL_PROMPTS.destination(v(1),v(2),v(3),v(4),v(5)),
     gaa:TOOL_PROMPTS.gaa(v(1)),
     food:TOOL_PROMPTS.food(v(1)),
-    scams:TOOL_PROMPTS.scams(v(1)),
     altitude:TOOL_PROMPTS.altitude(v(1),v(2)),
   };
-  return prompts[id]||'';
+  let result=prompts[id]||'';
+  const candidate=[v(1),v(2)].find(val=>COUNTRIES.some(c=>c.tier==='verified' && val && (val.toLowerCase().includes(c.name.toLowerCase())||c.name.toLowerCase().includes(val.toLowerCase()))));
+  if(candidate) result+=getVerifiedContext(candidate);
+  return result;
 }
 
 async function runTool(id){
@@ -1099,8 +1170,8 @@ async function runTool(id){
         messages:[{role:'user',content:`You are PackdUp — expert backpacker travel platform built on real firsthand experience. ${prompt}\n\nFormat with clear sections. Be specific and genuinely useful. End with a clear PackdUp Verdict.`}]})});
     const data=await r.json();
     const text=data.content?.[0]?.text||'Could not generate. Please try again.';
-    result.textContent=text;result.classList.add('show');
-    result.insertAdjacentHTML('afterend',`<div class="tool-result-actions"><button class="result-btn result-btn-pdf" onclick="downloadToolPDF('${TOOLS_DATA.find(t=>t.id===id)?.name||id}')">📄 Download PDF</button><button class="result-btn" onclick="navigator.clipboard.writeText(document.getElementById('tool-result').textContent);alert('Copied!')">📋 Copy</button></div>`);
+    result.innerHTML=markdownToHTML(text);lastToolResultText=text;result.classList.add('show');
+    result.insertAdjacentHTML('afterend',`<div class="tool-result-actions"><button class="result-btn result-btn-pdf" onclick="downloadToolPDF('${TOOLS_DATA.find(t=>t.id===id)?.name||id}')">📄 Download PDF</button><button class="result-btn" onclick="navigator.clipboard.writeText(lastToolResultText);alert('Copied!')">📋 Copy</button></div>`);
   }catch(e){result.textContent='Something went wrong. Please try again.';result.classList.add('show');}
   btn.disabled=false;loading.style.display='none';
 }
@@ -1123,13 +1194,13 @@ async function generateTrip(){
   document.getElementById('result-card').style.display='none';
   try{
     const r=await fetch(CF_WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-5',max_tokens:4000,messages:[{role:'user',content:`You are PackdUp — expert backpacker travel planner built on real firsthand experience across 37 countries. Create a genuinely useful, specific and honest trip plan.\n\nDestination: ${dest}\nDuration: ${dur}\nBudget: ${bud}\nTravelling: ${grp}\nPassport: ${pass}\nExperience: ${exp}\nTravel vibe: ${vibes}\n${extra?'Extra context: '+extra:''}\n\nWrite a comprehensive trip plan with:\n- Day-by-day or week-by-week itinerary with specific places\n- Specific accommodation recommendations with real prices\n- Real local food recommendations with dish names and costs\n- Specific transport routes with costs\n- Must-do activities with entry fees\n- Visa info for ${pass} passport\n- Full budget breakdown for the trip\n- 5 practical tips only someone who has been there would know\n- One honest warning about something people get wrong\n\nBe specific. Real place names, real prices, real advice. No generic tourist brochure content.`}]})});
+      body:JSON.stringify({model:'claude-sonnet-5',max_tokens:4000,messages:[{role:'user',content:`You are PackdUp — expert backpacker travel planner built on real firsthand experience across 37 countries. Create a genuinely useful, specific and honest trip plan.\n\nDestination: ${dest}\nDuration: ${dur}\nBudget: ${bud}\nTravelling: ${grp}\nPassport: ${pass}\nExperience: ${exp}\nTravel vibe: ${vibes}\n${extra?'Extra context: '+extra:''}${getVerifiedContext(dest)}\n\nWrite a comprehensive trip plan with:\n- Day-by-day or week-by-week itinerary with specific places\n- Specific accommodation recommendations with real prices\n- Real local food recommendations with dish names and costs\n- Specific transport routes with costs\n- Must-do activities with entry fees\n- Visa info for ${pass} passport\n- Full budget breakdown for the trip\n- 5 practical tips only someone who has been there would know\n- One honest warning about something people get wrong\n\nBe specific. Real place names, real prices, real advice. No generic tourist brochure content.`}]})});
     const data=await r.json();
     const text=data.content?.[0]?.text||'Could not generate. Please try again.';
     document.getElementById('result-flag').textContent=getFlag(dest);
     document.getElementById('result-title').textContent=dest+' — Your Trip Plan';
     document.getElementById('result-meta').textContent=dur+' · '+bud+' · PackdUp AI';
-    document.getElementById('result-body').textContent=text;
+    lastResultText=text;document.getElementById('result-body').innerHTML=markdownToHTML(text);
     document.getElementById('result-card').style.display='block';
   }catch(e){document.getElementById('result-body').textContent='Something went wrong. Please try again.';document.getElementById('result-card').style.display='block';}
   btn.disabled=false;
@@ -1152,7 +1223,7 @@ async function findDestination(){
     document.getElementById('result-flag').textContent='🌍';
     document.getElementById('result-title').textContent='Your Perfect Destinations';
     document.getElementById('result-meta').textContent='PackdUp Destination Finder';
-    document.getElementById('result-body').textContent=text;
+    lastResultText=text;document.getElementById('result-body').innerHTML=markdownToHTML(text);
     document.getElementById('result-card').style.display='block';
   }catch(e){console.error(e);}
   document.getElementById('planner-loading').style.display='none';
@@ -1169,13 +1240,13 @@ async function compareDestinations(){
   document.getElementById('result-card').style.display='none';
   try{
     const r=await fetch(CF_WORKER,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-5',max_tokens:2500,messages:[{role:'user',content:`You are PackdUp. Create honest comparison between ${c1} and ${c2} for ${dur} ${bud} backpacker. They care about: ${ctx||'overall experience'}. Compare: daily budget, food quality, activities, safety, transport ease, English spoken, backpacker scene, best season, wow factor. PackdUp Verdict on which wins overall AND who each suits best. Be honest — don't say both are great.`}]})});
+      body:JSON.stringify({model:'claude-sonnet-5',max_tokens:2500,messages:[{role:'user',content:`You are PackdUp. Create honest comparison between ${c1} and ${c2} for ${dur} ${bud} backpacker. They care about: ${ctx||'overall experience'}. Compare: daily budget, food quality, activities, safety, transport ease, English spoken, backpacker scene, best season, wow factor. PackdUp Verdict on which wins overall AND who each suits best. Be honest — don't say both are great.${getVerifiedContext(c1)}${getVerifiedContext(c2)}`}]})});
     const data=await r.json();
     const text=data.content?.[0]?.text||'Could not compare.';
     document.getElementById('result-flag').textContent='🔄';
     document.getElementById('result-title').textContent=c1+' vs '+c2;
     document.getElementById('result-meta').textContent='PackdUp Comparison';
-    document.getElementById('result-body').textContent=text;
+    lastResultText=text;document.getElementById('result-body').innerHTML=markdownToHTML(text);
     document.getElementById('result-card').style.display='block';
   }catch(e){console.error(e);}
   document.getElementById('planner-loading').style.display='none';
@@ -1185,28 +1256,26 @@ function downloadPDF(){
   const {jsPDF}=window.jspdf;
   const doc=new jsPDF();
   const title=document.getElementById('result-title').textContent;
-  const body=document.getElementById('result-body').textContent;
   doc.setFontSize(20);doc.setTextColor(29,158,117);doc.text('PackdUp',15,20);
   doc.setFontSize(16);doc.setTextColor(26,43,37);doc.text(title,15,35);
   doc.setFontSize(10);doc.setTextColor(74,99,88);
-  const lines=doc.splitTextToSize(body,180);doc.text(lines,15,50);
-  doc.setFontSize(8);doc.setTextColor(138,168,152);doc.text('PackdUp — packdup.ie | The home of backpacker travel',15,285);
+  renderMarkdownToPDF(doc, lastResultText, 50);
+  doc.setFontSize(8);doc.setTextColor(138,168,152);doc.text('PackdUp - packdup.ie | The home of backpacker travel',15,290);
   doc.save('PackdUp-'+title.replace(/[^a-z0-9]/gi,'-').toLowerCase()+'.pdf');
 }
 
 function downloadToolPDF(toolName){
   const {jsPDF}=window.jspdf;
   const doc=new jsPDF();
-  const body=document.getElementById('tool-result').textContent;
   doc.setFontSize(20);doc.setTextColor(29,158,117);doc.text('PackdUp',15,20);
   doc.setFontSize(16);doc.setTextColor(26,43,37);doc.text(toolName,15,35);
   doc.setFontSize(10);doc.setTextColor(74,99,88);
-  const lines=doc.splitTextToSize(body,180);doc.text(lines,15,50);
-  doc.setFontSize(8);doc.setTextColor(138,168,152);doc.text('PackdUp — packdup.ie',15,285);
+  renderMarkdownToPDF(doc, lastToolResultText, 50);
+  doc.setFontSize(8);doc.setTextColor(138,168,152);doc.text('PackdUp - packdup.ie',15,290);
   doc.save('PackdUp-'+toolName.replace(/\s+/g,'-')+'.pdf');
 }
 
-function copyResult(){navigator.clipboard.writeText(document.getElementById('result-body').textContent);alert('Copied!');}
+function copyResult(){navigator.clipboard.writeText(lastResultText);alert('Copied!');}
 
 function submitEmail(e){
   e.preventDefault();
